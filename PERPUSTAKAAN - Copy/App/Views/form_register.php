@@ -1,4 +1,4 @@
-<form action="register.php" method="POST">
+<!-- <form action="register.php" method="POST">
     <label for="nama_lengkap">Nama Lengkap</label><br>
     <input type="text" id="nama_lengkap" name="nama_lengkap" placeholder="Reyhan Fadillah" required><br><br>
 
@@ -15,4 +15,4 @@
     <label for="terms">Saya menyetujui <a href="#">Syarat dan Ketentuan</a></label><br><br>
 
     <input type="submit" value="Daftar">
-</form>
+</form> -->

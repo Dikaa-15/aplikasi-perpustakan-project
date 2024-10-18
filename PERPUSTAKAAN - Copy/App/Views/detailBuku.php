@@ -110,7 +110,7 @@ if ($_POST) {
         <div class="flex">
             <div class="w-1/3">
                 <!-- Cover Buku -->
-                <img src="/assets/img/<?= htmlspecialchars($buku->cover); ?>" alt="Cover Buku" class="w-full h-auto">
+                <img src="../../public//assets//Books// <? htmlspecialchars($buku->cover); ?>" alt="Cover Buku" class="w-full h-auto">
             </div>
             <div class="w-2/3 ml-5">
                 <!-- Detail Buku -->

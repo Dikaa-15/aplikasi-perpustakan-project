@@ -1,3 +1,16 @@
+<?php
+
+session_start();
+
+// Memeriksa apakah pengguna sudah login
+if (!isset($_SESSION['no_kartu'])) {
+    header("Location: ../auth/login.php?redirect=" . urlencode($_SERVER['REQUEST_URI']));
+    exit();
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -99,7 +99,9 @@ class User {
         return false;
     }
 
-    public function register() {
+     // Fungsi untuk registrasi pengguna
+     public function register() {
+        // Query untuk memasukkan data user
         $query = "INSERT INTO " . $this->table_name . " 
         SET nama_lengkap=:nama_lengkap, nis=:nis, no_kartu=:no_kartu, no_whatsapp=:no_whatsapp, 
             password=:password, roles=:roles";
@@ -122,16 +124,14 @@ class User {
         $stmt->bindParam(":password", $this->password);
         $stmt->bindParam(":roles", $this->roles);
         
+        // Eksekusi query dan simpan session
         try {
             if ($stmt->execute()) {
-                // Set session and cookie after successful registration
-                session_start();
-                $_SESSION['id_user'] = $this->conn->lastInsertId();
+                // Menyimpan id_user di session
+                $this->id_user = $this->conn->lastInsertId();
+                $_SESSION['id_user'] = $this->id_user;
                 $_SESSION['nama_lengkap'] = $this->nama_lengkap;
                 $_SESSION['roles'] = $this->roles;
-        
-                // Set a cookie for remembering the user (optional)
-                setcookie("user_id", $_SESSION['id_user'], time() + (86400 * 30), "/"); // 30 days
         
                 return true;
             }
@@ -139,7 +139,14 @@ class User {
             echo "Error: " . $e->getMessage();
         }
         
+        return false;
     }
+
+
+
+
+
+
     
     public function login() {
         $query = "SELECT * FROM " . $this->table_name . " WHERE no_kartu = :no_kartu LIMIT 0,1";

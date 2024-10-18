@@ -1,5 +1,13 @@
 <?php
 
+session_start();
+
+// Memeriksa apakah pengguna sudah login
+if (!isset($_SESSION['no_kartu'])) {
+    header("Location: ..//Views/auth/login.php?redirect=" . urlencode($_SERVER['REQUEST_URI']));
+    exit();
+}
+
 require_once '../../core/Database.php';
 require_once '../../Models/user.php';
 
@@ -27,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Panggil fungsi absenPerpustakaan dari class User
         if ($user->absenPerpustakaan()) {
             // Jika absensi berhasil, alihkan user ke halaman successPage.php
-            header("Location: successPage.php");
+            header("Location: ../successPage.php");
             exit(); // Pastikan script berhenti setelah redirect
         } else {
             // Jika absensi gagal, alihkan ke userabsen.php dengan pesan error

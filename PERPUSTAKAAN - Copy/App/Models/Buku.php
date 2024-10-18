@@ -32,6 +32,12 @@ class Buku {
 
         return $stmt;
     }
+    public function searchBooks() {
+        $searchBooks = "
+        SELECT b.id_buku, b.judul_buku, b.cover, b.penerbit FROM buku WHERE b.judul_buku = :judul_buku";
+        $stmt = $this->conn->prepare($searchBooks);
+        
+    }
 
     public function search($query, $id_user) {
         // Query untuk mencari buku berdasarkan judul dengan LIKE dan id_user
@@ -57,6 +63,26 @@ class Buku {
     
         return $stmt; // Kembalikan statement untuk di-fetch
     }
+    public function searchByTitle($query) {
+        // Query untuk mencari buku berdasarkan judul
+        $search_query = "
+            SELECT b.id_buku, b.judul_buku, b.cover, b.penerbit 
+            FROM buku b
+            WHERE b.judul_buku LIKE :search_term";
+    
+        // Menyiapkan statement
+        $stmt = $this->conn->prepare($search_query);
+    
+        // Menambahkan wildcards untuk pencarian parsial
+        $search_term = "%{$query}%";
+        $stmt->bindParam(':search_term', $search_term);
+    
+        // Eksekusi query
+        $stmt->execute();
+    
+        return $stmt; // Kembalikan statement untuk di-fetch
+    }
+    
     
 
 

@@ -37,7 +37,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php foreach($books as $data): ?>
         <div class="border-2 border-gray p-3">
         <a href="detailBuku.php?id_buku=<?= $data['id_buku']; ?>"> 
-           <img src="/public/assets/image// $data['cover']; ?>" alt="Cover Buku" width="100">
+           <img src="../../public//assets//Books// $data['cover']; ?>" alt="Cover Buku" width="100">
             <h1><?= $data['judul_buku']; ?></h1>
             <p><?= $data['penerbit']; ?></p>
             </a>
@@ -52,7 +52,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $('#search').on('keyup', function() {
             var query = $(this).val();
             $.ajax({
-                url: '../Controller/live_searching.php',
+                url: '../Controller/live_searching-Books.php',
                 method: 'POST',
                 data: {query: query},
                 dataType: 'json',
