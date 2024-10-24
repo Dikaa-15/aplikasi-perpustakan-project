@@ -1,6 +1,4 @@
 <?php
-
-
 class Peminjaman {
     private $conn;
     private $table = 'peminjaman';
@@ -10,9 +8,22 @@ class Peminjaman {
     }
 
     // Fetch all borrowings
+    public function getPeminjamanToday() {
+        $query = "SELECT p.id_peminjaman, u.nama_lengkap, u.kelas, u.no_kartu, b.judul_buku, p.kuantitas_buku, 
+                  p.tanggal_peminjaman, p.waktu_peminjaman, p.tanggal_kembalian, p.waktu_kembalian, p.status_peminjaman
+                  FROM " . $this->table . " p
+                  JOIN user u ON p.id_user = u.id_user
+                  JOIN buku b ON p.id_buku = b.id_buku
+                  WHERE DATE(p.tanggal_peminjaman) = CURDATE()";  // Filter peminjaman hari ini
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+
     public function getAllPeminjaman() {
         $query = "SELECT p.id_peminjaman, u.nama_lengkap, u.kelas, u.no_kartu, b.judul_buku, p.kuantitas_buku, 
-                  p.tanggal_peminjaman, p.tanggal_kembalian, p.status_peminjaman
+                  p.tanggal_peminjaman, p.waktu_peminjaman, p.tanggal_kembalian, p.waktu_kembalian, p.status_peminjaman
                   FROM " . $this->table . " p
                   JOIN user u ON p.id_user = u.id_user
                   JOIN buku b ON p.id_buku = b.id_buku";

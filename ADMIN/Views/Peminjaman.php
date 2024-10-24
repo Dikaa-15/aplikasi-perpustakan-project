@@ -3,6 +3,14 @@
 require_once '../Controller/Peminjaman.php';
 $peminjamanController = new PeminjamanController();
 $peminjamans = $peminjamanController->getAllPeminjaman();
+
+
+
+// Mendapatkan data hari ini atau semua
+$today = isset($_GET['filter']) && $_GET['filter'] == 'today';
+$peminjamans = $today ? $peminjamanController->getPeminjamanToday() : $peminjamanController->getAllPeminjaman();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -19,47 +27,57 @@ $peminjamans = $peminjamanController->getAllPeminjaman();
     <div class="container mx-auto py-8">
         <h2 class="text-3xl font-bold text-center mb-8">Data Peminjaman Buku</h2>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white shadow-md rounded-lg">
-                <thead>
-                    <tr>
-                        <th class="py-3 px-6 bg-gray-200 font-bold text-gray-600 uppercase text-sm text-left">No</th>
-                        <th class="py-3 px-6 bg-gray-200 font-bold text-gray-600 uppercase text-sm text-left">Nama Pengunjung</th>
-                        <th class="py-3 px-6 bg-gray-200 font-bold text-gray-600 uppercase text-sm text-left">Kelas</th>
-                        <th class="py-3 px-6 bg-gray-200 font-bold text-gray-600 uppercase text-sm text-left">No Kartu</th>
-                        <th class="py-3 px-6 bg-gray-200 font-bold text-gray-600 uppercase text-sm text-left">Judul Buku</th>
-                        <th class="py-3 px-6 bg-gray-200 font-bold text-gray-600 uppercase text-sm text-left">Kuantitas</th>
-                        <th class="py-3 px-6 bg-gray-200 font-bold text-gray-600 uppercase text-sm text-left">Tanggal Peminjaman</th>
-                        <th class="py-3 px-6 bg-gray-200 font-bold text-gray-600 uppercase text-sm text-left">Tanggal Kembalian</th>
-                        <th class="py-3 px-6 bg-gray-200 font-bold text-gray-600 uppercase text-sm text-left">Status</th>
-                        <th class="py-3 px-6 bg-gray-200 font-bold text-gray-600 uppercase text-sm text-left">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php $no = 1; ?>
-                    <?php foreach ($peminjamans as $peminjaman) : ?>
-                        <tr class="border-b border-gray-200 hover:bg-gray-100">
-                            <td class="py-3 px-6 text-left whitespace-nowrap"><?= $no++; ?></td>
-                            <td class="py-3 px-6 text-left"><?= htmlspecialchars($peminjaman['nama_lengkap'] ?? ''); ?></td>
-                            <td class="py-3 px-6 text-left"><?= htmlspecialchars($peminjaman['kelas'] ?? ''); ?></td>
-                            <td class="py-3 px-6 text-left"><?= htmlspecialchars($peminjaman['no_kartu'] ?? ''); ?></td>
-                            <td class="py-3 px-6 text-left"><?= htmlspecialchars($peminjaman['judul_buku'] ?? ''); ?></td>
-                            <td class="py-3 px-6 text-left"><?= htmlspecialchars($peminjaman['kuantitas_buku'] ?? ''); ?></td>
-                            <td class="py-3 px-6 text-left"><?= htmlspecialchars($peminjaman['tanggal_peminjaman'] ?? ''); ?></td>
-                            <td class="py-3 px-6 text-left"><?= htmlspecialchars($peminjaman['tanggal_kembalian'] ?? ''); ?></td>
-                            <td class="py-3 px-6 text-left"><?= htmlspecialchars($peminjaman['status_peminjaman'] ?? ''); ?></td>
-
-                            <td class="py-3 px-6 text-left">
-                                <button onclick="updateStatus(<?= $peminjaman['id_peminjaman']; ?>, 'sudah dikembalikan')" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Verifikasi</button>
-                                <button onclick="confirmDelete(<?= $peminjaman['id_peminjaman']; ?>)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2">Hapus</button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+        <!-- Navtabs -->
+        <div class="flex justify-center mb-4">
+            <a href="Peminjaman.php?filter=today" class="px-4 py-2 <?= $today ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'; ?> rounded-lg">Hari Ini</a>
+            <a href="Peminjaman.php" class="px-4 py-2 <?= !$today ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-700'; ?> rounded-lg ml-4">Semua Hari</a>
         </div>
-    </div>
 
+                        <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white shadow-md rounded-lg text-sm">
+                        <thead>
+                            <tr>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">No</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">Nama Pengunjung</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">Kelas</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">No Kartu</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">Judul Buku</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">Kuantitas</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">Tanggal Peminjaman</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">Jam Peminjaman</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">Tanggal Pengembalian</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">Jam Pengembalian</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">Status</th>
+                                <th class="py-2 px-4 bg-gray-200 font-bold text-gray-600 uppercase text-left">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php foreach ($peminjamans as $peminjaman) : ?>
+                                <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                    <td class="py-2 px-4 text-left whitespace-nowrap"><?= $no++; ?></td>
+                                    <td class="py-2 px-4 text-left"><?= htmlspecialchars($peminjaman['nama_lengkap'] ?? ''); ?></td>
+                                    <td class="py-2 px-4 text-left"><?= htmlspecialchars($peminjaman['kelas'] ?? ''); ?></td>
+                                    <td class="py-2 px-4 text-left"><?= htmlspecialchars($peminjaman['no_kartu'] ?? ''); ?></td>
+                                    <td class="py-2 px-4 text-left"><?= htmlspecialchars($peminjaman['judul_buku'] ?? ''); ?></td>
+                                    <td class="py-2 px-4 text-left"><?= htmlspecialchars($peminjaman['kuantitas_buku'] ?? ''); ?></td>
+                                    <td class="py-2 px-4 text-left"><?= isset($peminjaman['tanggal_peminjaman']) ? date('Y-m-d', strtotime($peminjaman['tanggal_peminjaman'])) : '-'; ?></td>
+                                    <td class="py-2 px-4 text-left"><?= isset($peminjaman['tanggal_peminjaman']) ? date('H:i:s', strtotime($peminjaman['waktu_peminjaman'])) : '-'; ?></td>
+                                    <td class="py-2 px-4 text-left"><?= isset($peminjaman['tanggal_kembalian']) ? date('Y-m-d', strtotime($peminjaman['tanggal_kembalian'])) : '-'; ?></td>
+                                    <td class="py-2 px-4 text-left"><?= isset($peminjaman['tanggal_kembalian']) ? date('H:i:s', strtotime($peminjaman['waktu_kembalian'])) : '-'; ?></td>
+
+                                    <td class="py-2 px-4 text-left"><?= htmlspecialchars($peminjaman['status_peminjaman'] ?? ''); ?></td>
+                                    <td class="py-2 px-4 text-left">
+                                        <button onclick="updateStatus(<?= $peminjaman['id_peminjaman']; ?>, 'sudah dikembalikan')" class="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">Verifikasi</button>
+                                        <button onclick="confirmDelete(<?= $peminjaman['id_peminjaman']; ?>)" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded ml-2">Hapus</button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+    </div>
     <script>
         function updateStatus(id, status) {
     Swal.fire({
@@ -74,7 +92,7 @@ $peminjamans = $peminjamanController->getAllPeminjaman();
     }).then((result) => {
         if (result.isConfirmed) {
             // Update status dan tanggal kembalian otomatis
-            window.location.href = 'editpeminjaman.php?id=' + id + '&status=' + status;
+            window.location.href = '../Controller/editPeminjaman.php?id=' + id + '&status=' + status;
         }
     });
 }
@@ -97,7 +115,7 @@ $peminjamans = $peminjamanController->getAllPeminjaman();
             });
         }
     </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 </html>
-

@@ -1,6 +1,6 @@
 <?php
 require_once '../core/Database.php';
-require_once '../Models/peminjaman.php';
+require_once '../Models/Peminjaman.php';
 
 class PeminjamanController {
     private $peminjaman;
@@ -15,6 +15,11 @@ class PeminjamanController {
     public function getAllPeminjaman() {
         return $this->peminjaman->getAllPeminjaman();
     }
+
+    public function getPeminjamanToday() {
+        return $this->peminjaman->getPeminjamanToday();
+    }
+    
 
     // Update borrowing status
     public function updateStatus($id, $status, $tanggal_kembalian) {

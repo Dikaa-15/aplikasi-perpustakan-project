@@ -1,5 +1,5 @@
 <?php
-require_once '../Controller/Peminjaman.php';
+require_once './Peminjaman.php';
 
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
