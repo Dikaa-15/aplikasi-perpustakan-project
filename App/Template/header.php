@@ -3,7 +3,7 @@
         <nav class="container mx-auto px-4 flex justify-between items-center">
             <!-- Content Left -->
             <div class="md:py-4 text-3xl font-bold text-lime-500 capitalize">
-                <a href="" class=""><img src="../../public//logo 1.png" alt="" /></a>
+                <a href="../Views/Landing-page.php" class=""><img src="../../public//logo 1.png" alt="" /></a>
             </div>
 
             <!-- Content Center -->

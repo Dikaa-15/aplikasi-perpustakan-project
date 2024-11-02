@@ -1,5 +1,4 @@
 <?php
-
 session_start();
 
 // Memeriksa apakah pengguna sudah login
@@ -8,8 +7,8 @@ if (!isset($_SESSION['no_kartu'])) {
     exit();
 }
 
-require_once '../../core/Database.php';
-require_once '../../Models/user.php';
+require_once '../core/Database.php';
+require_once '../Models/user.php';
 
 // Inisiasi database
 $database = new Database();
@@ -17,6 +16,8 @@ $db = $database->getConnection();
 
 // Inisiasi objek user
 $user = new User($db);
+
+header('Content-Type: application/json'); // Set header JSON untuk response
 
 // Cek apakah form di-submit
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -32,26 +33,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Jika user ditemukan, cek apakah user sudah absen hari ini
         $user->id_user = $userInfo['id_user'];
 
-        // Cek apakah user sudah absen hari ini
         if ($user->cekAbsensiHariIni()) {
-            // Jika sudah absen hari ini, alihkan ke halaman dengan pesan error
-            header("Location: userabsen.php?error=Anda+sudah+absen+hari+ini");
+            // Jika sudah absen hari ini, kembalikan pesan error
+            echo json_encode(['status' => 'error', 'message' => 'Anda sudah absen hari ini']);
             exit();
         }
 
         // Jika belum absen hari ini, lakukan proses absensi
         if ($user->absenPerpustakaan()) {
-            // Jika absensi berhasil, alihkan user ke halaman successPage.php
-            header("Location: ../successPage.php");
+            // Jika absensi berhasil
+            echo json_encode(['status' => 'success', 'message' => 'Absensi berhasil']);
             exit();
         } else {
-            // Jika absensi gagal, alihkan ke userabsen.php dengan pesan error
-            header("Location: userabsen.php?error=Gagal+melakukan+absensi");
+            // Jika absensi gagal
+            echo json_encode(['status' => 'error', 'message' => 'Gagal melakukan absensi']);
             exit();
         }
     } else {
-        // Jika no_kartu tidak ditemukan, alihkan ke userabsen.php dengan pesan error
-        header("Location: userabsen.php?error=Nomor+kartu+belum+terdaftar");
+        // Jika no_kartu tidak ditemukan
+        echo json_encode(['status' => 'error', 'message' => 'Nomor kartu belum terdaftar']);
         exit();
     }
 }

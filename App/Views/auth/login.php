@@ -2,7 +2,7 @@
 session_start();
 
 // Sertakan file koneksi ke database dan model user
-require_once '../../core/Database.php'; 
+require_once __DIR__ . '../../../core/Database.php';
 require_once '../../Models/user.php'; 
 
 // Membuat instance koneksi ke database
@@ -94,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       <div class="min-h-screen w-full col-span-1 ">
         <div class="py-2 px-6 w-full mx-auto">
-          <img src="../../../public//assets//logo 1.png" alt="Logo" />
+          <img src="../../../public//logo 1.png" alt="Logo" />
         </div>
 
         <div class="mt-20 mx-4">
@@ -143,7 +143,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
 
       <div class="flex-1 flex items-center justify-center">
-        <img src="../../../public//assets//Frame 28 (1).png" alt="Gambar Login" class="hidden md:block w-full h-auto object-contain">
+        <img src="../../../public/Frame 28 (1).png" alt="Gambar Login" class="hidden md:block w-full h-auto object-contain">
       </div>
     </div>
   </div>

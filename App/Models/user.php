@@ -1,6 +1,8 @@
 <?php
 
-require_once '../../core/Database.php';
+
+include_once '../core/Database.php';
+
 
 class User
 {

@@ -10,6 +10,7 @@
 </body>
 </html>
 <div class="">
+
     <script
         src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"
         defer></script>
@@ -45,7 +46,7 @@
                 </a>
 
                 <a
-                    href="daftarBuku.html"
+                    href="../Views/DataBuku.php"
                     class="flex items-center gap-2 px-4 py-2 group hover:bg-main rounded-lg transition-all duration-300">
                     <img
                         src="../../public//svg/book.svg"
@@ -162,6 +163,229 @@
                 </div>
             </header>
 
+            <!-- Main Content Start -->
+          <main
+            class="flex-1 overflow-x-hidden overflow-y-auto px-4 md:px-8 pt-2"
+          >
+            <!-- Search Bar Start -->
+            <div class="mb-5 md:mb-4">
+              <div class="w-full mx-auto md:mx-0 md:w-[75%] relative">
+                <input
+                  type="text"
+                  id="name"
+                  placeholder="Search"
+                  class="w-full block flex-1 bg-inputColors px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
+                />
+                <button type="submit" class="absolute right-4 top-3">
+                  <i class="fa-solid fa-search text-lg text-slate-500"></i>
+                </button>
+              </div>
+            </div>
+            <!-- Search Bar End -->
+
+            <!-- Heading Start -->
+            <div class="mb-4 md:mb-8">
+              <h2 class="font-bold text-2xl text-black">Data Peminjaman</h2>
+            </div>
+            <!-- Heading End -->
+
+            <!-- Content Detail Peminjaman Start -->
+            <div class="flex items-center gap-6 w-full mb-10">
+              <!-- Card Buku Start -->
+              <div
+                class="w-[270px] hidden md:block shadow-lg rounded-lg bg-white px-3 py-3"
+              >
+                <div class="w-[222px] rounded-md mx-auto mb-3">
+                  <img
+                    src="../../public//assets//Books/<?= htmlspecialchars($row['cover']) ?>"
+                    class="w-full"
+                    alt=""
+                  />
+                </div>
+
+                <!-- Title Start -->
+                <div class="px-3">
+                  <div class="flex justify-between mb-3">
+                    <p class="font-bold text-lg text-black"><?= htmlspecialchars($row['judul_buku']) ?></p>
+
+                    <div class="flex items-center gap-1">
+                      <i class="fa-solid fa-star text-yellow-500"></i>
+                      <p class="font-normal">4.5</p>
+                    </div>
+                  </div>
+
+                  <p class="font-normal text-sm">
+                  <?= htmlspecialchars($row['sinopsis']) ?>
+                  </p>
+                </div>
+                <!-- Title End -->
+              </div>
+              <!-- Card Buku End -->
+
+              <!-- Penjelasan Start -->
+              <div
+                class="w-full md:w-[450px] h-[353px] mx-auto md:mx-0 bg-inputColors px-4 py-3 rounded-lg overflow-x-hidden"
+              >
+                <!-- Heading Start -->
+                <div class="">
+                  <h2 class="text-[28px] font-bold text-black">
+                    Buku Geografis
+                  </h2>
+                  <p class="font-normal text-sm text-grey my-3">
+                    Penerbit : Kompas Gramedia
+                  </p>
+                  <p class="font-bold text-[20px] text-black mb-4">
+                    Batas Peminjaman
+                  </p>
+
+                  <!-- Batas Peminjaman Start -->
+                  <div
+                    class="w-fit md:w-[20rem] px-2 md:px-6 py-3 bg-pinkSec flex items-center gap-1 rounded-lg mb-5"
+                  >
+                    <a
+                      href=""
+                      class="px-2 py-1 text-white rounded-md bg-primaryBlue"
+                      >30</a
+                    >
+                    <a href="" class="px-2 py-1 text-primaryBlue">Day</a>
+                    <a
+                      href=""
+                      class="px-2 py-1 text-white rounded-md bg-primaryBlue"
+                      >24</a
+                    >
+                    <a href="" class="px-2 py-1 text-primaryBlue">Hours</a>
+                    <a
+                      href=""
+                      class="px-2 py-1 text-white rounded-md bg-primaryBlue"
+                      >60</a
+                    >
+                    <a href="" class="px-2 py-1 text-primaryBlue">Sec</a>
+                  </div>
+                  <!-- Batas Peminjaman End -->
+
+                  <!-- Cek Status Peminjaman Start -->
+                  <div class="">
+                    <h2 class="text-[20px] font-bold text-black mb-4">
+                      Status Peminjaman
+                    </h2>
+
+                    <a href="">
+                      <div
+                        class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 bg-pinkButton text-white font-bold text-[20px] border hover:border-pinkButton hover:bg-white hover:text-pinkButton transition-all duration-300"
+                      >
+                        Sedang Dipinjam
+                      </div>
+                    </a>
+                  </div>
+                  <!-- Cek Status Peminjaman End -->
+                </div>
+                <!-- Heading End -->
+              </div>
+              <!-- Penjelasan End -->
+            </div>
+            <!-- Content Detail Peminjaman End -->
+
+            <!-- Content Detail Peminjaman Start -->
+            <div class="flex items-center gap-6 w-full">
+              <!-- Card Buku Start -->
+              <div
+                class="w-[270px] hidden md:block shadow-lg rounded-lg bg-white px-3 py-3"
+              >
+                <div class="w-[222px] rounded-md mx-auto mb-3">
+                  <img
+                    src="../public/image/card buku/3.png"
+                    class="w-full"
+                    alt=""
+                  />
+                </div>
+
+                <!-- Title Start -->
+                <div class="px-3">
+                  <div class="flex justify-between mb-3">
+                    <p class="font-bold text-lg text-black">Buku Geografis</p>
+
+                    <div class="flex items-center gap-1">
+                      <i class="fa-solid fa-star text-yellow-500"></i>
+                      <p class="font-normal">4.5</p>
+                    </div>
+                  </div>
+
+                  <p class="font-normal text-sm">
+                    Buku yang tepat buat kamu yang ingin tahu letak geografis
+                    dunia
+                  </p>
+                </div>
+                <!-- Title End -->
+              </div>
+              <!-- Card Buku End -->
+
+              <!-- Penjelasan Start -->
+              <div
+                class="w-full md:w-[450px] h-[353px] mx-auto md:mx-0 bg-inputColors px-4 py-3 rounded-lg overflow-x-hidden"
+              >
+                <!-- Heading Start -->
+                <div class="">
+                  <h2 class="text-[28px] font-bold text-black">
+                    Buku Geografis
+                  </h2>
+                  <p class="font-normal text-sm text-grey my-3">
+                    Penerbit : Kompas Gramedia
+                  </p>
+                  <p class="font-bold text-[20px] text-black mb-4">
+                    Batas Peminjaman
+                  </p>
+
+                  <!-- Batas Peminjaman Start -->
+                  <div
+                    class="w-fit px-3 md:px-6 py-3 bg-pinkSec flex items-center gap-1 rounded-lg mb-5"
+                  >
+                    <a
+                      href=""
+                      class="px-2 py-1 text-white rounded-md bg-primaryBlue"
+                      >30</a
+                    >
+                    <a href="" class="px-2 py-1 text-primaryBlue">Day</a>
+                    <a
+                      href=""
+                      class="px-2 py-1 text-white rounded-md bg-primaryBlue"
+                      >24</a
+                    >
+                    <a href="" class="px-2 py-1 text-primaryBlue">Hours</a>
+                    <a
+                      href=""
+                      class="px-2 py-1 text-white rounded-md bg-primaryBlue"
+                      >60</a
+                    >
+                    <a href="" class="px-2 py-1 text-primaryBlue">Sec</a>
+                  </div>
+                  <!-- Batas Peminjaman End -->
+
+                  <!-- Cek Status Peminjaman Start -->
+                  <div class="">
+                    <h2 class="text-[20px] font-bold text-black mb-4">
+                      Status Peminjaman
+                    </h2>
+
+                    <a href="">
+                      <div
+                        class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 bg-greens text-white font-bold text-[20px] border hover:border-greens hover:bg-white hover:text-greens transition-all duration-300"
+                      >
+                        Sedang Dipinjam
+                      </div>
+                    </a>
+                  </div>
+                  <!-- Cek Status Peminjaman End -->
+                </div>
+                <!-- Heading End -->
+              </div>
+              <!-- Penjelasan End -->
+            </div>
+            <!-- Content Detail Peminjaman End -->
+          </main>
+          <!-- Main Content End -->
+
+
         </div>
 
     </div>
+</div>

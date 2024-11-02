@@ -11,7 +11,7 @@ $db = $database->getConnection();
 $buku = new Buku($db);
 
 // Mengambil hanya 4 data buku
-$stmt = $buku->readLimited(12); // Mengambil 4 data buku
+$stmt = $buku->readLimited(4); // Mengambil 4 data buku
 $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -186,62 +186,63 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#search').on('keyup', function() {
-                var query = $(this).val();
-                $.ajax({
-                    url: '../Controller/live_searching-Books.php',
-                    method: 'POST',
-                    data: {
-                        query: query
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        // Kosongkan konten yang ada sebelum menampilkan hasil pencarian baru
-                        $('#book-table').html('');
+    $(document).ready(function() {
+    // Menyimpan konten awal hanya jika pertama kali halaman dimuat
+    var initialContent = $('#book-table').html(); 
 
-                        // Jika tidak ada data yang ditemukan, tampilkan pesan
-                        if (data.length === 0) {
-                            $('#book-table').html('<p class="text-center w-full">Tidak ada hasil yang ditemukan</p>');
-                        } else {
-                            var rows = '';
-                            data.forEach(function(book) {
-                                // Cek jika cover buku tidak ada atau undefined, gunakan gambar default
-                                var cover = book.cover ? book.cover : 'default-cover.png';
+    $('#search').on('keyup', function() {
+        var query = $(this).val().trim(); 
 
-                                rows += `
-                        <div class="w-full shadow-xl rounded-lg mb-6 md:mb-5">
-                            <div class="px-4 py-4">
-                                <a href="detailBuku.php?id_buku=${book.id_buku}">
-                                    <div class="w-full h-[300px] md:h-[222px] lg:h-[280px] xl:h-[310px] rounded-md relative group">
-                                        <div class="w-full h-full bg-black bg-opacity-35 items-center justify-center absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 hidden group-hover:flex transition-all duration-700 rounded-lg cursor-pointer">
-                                            <div class="flex flex-col justify-center items-center gap-2">
-                                                <i class="fa-regular fa-eye text-white text-5xl md:text-6xl"></i>
-                                                <p class="text-white text-xl font-semibold">Lihat Detail</p>
+        if (query === '') {
+            // Tampilkan data default jika pencarian kosong
+            $('#book-table').html(initialContent);
+            return;
+        }
+
+        $.ajax({
+            url: '../Controller/live_searching-Books.php',
+            method: 'POST',
+            data: { query: query },
+            dataType: 'json',
+            success: function(data) {
+                $('#book-table').html(''); // Kosongkan konten sebelum menampilkan hasil
+
+                if (data.length === 0) {
+                    $('#book-table').html('<p class="text-center w-full">Tidak ada hasil yang ditemukan</p>');
+                } else {
+                    var rows = '';
+                    data.forEach(function(book) {
+                        rows += `
+                            <div class="w-full shadow-xl rounded-lg mb-6 md:mb-5">
+                                <div class="px-4 py-4">
+                                    <a href="detailBuku.php?id_buku=${book.id_buku}">
+                                        <div class="w-full h-[300px] md:h-[222px] lg:h-[280px] xl:h-[310px] rounded-md relative group">
+                                            <div class="w-full h-full bg-black bg-opacity-35 items-center justify-center absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 hidden group-hover:flex transition-all duration-700 rounded-lg cursor-pointer">
+                                                <div class="flex flex-col justify-center items-center gap-2">
+                                                    <i class="fa-regular fa-eye text-white text-5xl md:text-6xl"></i>
+                                                    <p class="text-white text-xl font-semibold">Lihat Detail</p>
+                                                </div>
                                             </div>
+                                            <img src="../../public/assets/Books/${book.cover}" class="w-full h-full object-cover rounded-lg" alt="Cover Buku">
                                         </div>
-                                        <img src="../assets/Books/${cover}" class="w-full h-full object-cover rounded-lg" alt="Cover Buku">
+                                    </a>
+                                    <div class="my-3 px-1">
+                                        <div class="flex justify-between items-center mb-3">
+                                            <h1 class="font-bold md:text-lg">${book.judul_buku}</h1>
+                                            <p><i class="fa-solid fa-star text-yellow-500 pe-2"></i><span>4.5</span></p>
+                                        </div>
+                                        <p class="text-grey font-normal">${book.penerbit || 'Penerbit tidak diketahui'}</p>
                                     </div>
-                                </a>
-                                <div class="my-3 px-1">
-                                    <div class="flex justify-between items-center mb-3">
-                                        <h1 class="font-bold md:text-lg">${book.judul_buku}</h1>
-                                        <p>
-                                            <i class="fa-solid fa-star text-yellow-500 pe-2"></i><span>4.5</span>
-                                        </p>
-                                    </div>
-                                    <p class="text-grey font-normal">${book.penerbit ? book.penerbit : 'Penerbit tidak diketahui'}</p>
                                 </div>
-                            </div>
-                        </div>`;
-                            });
-                            // Mengisi hasil pencarian ke dalam #book-table
-                            $('#book-table').html(rows);
-                        }
-                    }
-                });
-            });
+                            </div>`;
+                    });
+                    $('#book-table').html(rows);
+                }
+            }
         });
+    });
+});
+
     </script>
 
 </body>

@@ -39,7 +39,7 @@ class Buku {
         
     }
 
-    public function readLimited($limit = 12) {
+    public function readLimited($limit = 4) {
         // Query untuk mengambil maksimal 4 data buku
         $query = "SELECT id_buku, kode_buku, judul_buku, cover, sinopsis, penerbit FROM " . $this->table_name . " LIMIT :limit";
     
@@ -85,19 +85,20 @@ class Buku {
             SELECT b.id_buku, b.judul_buku, b.cover, b.penerbit 
             FROM buku b
             WHERE b.judul_buku LIKE :search_term";
-    
+        
         // Menyiapkan statement
         $stmt = $this->conn->prepare($search_query);
-    
+        
         // Menambahkan wildcards untuk pencarian parsial
         $search_term = "%{$query}%";
         $stmt->bindParam(':search_term', $search_term);
-    
+        
         // Eksekusi query
         $stmt->execute();
-    
+        
         return $stmt; // Kembalikan statement untuk di-fetch
     }
+    
     
     
 

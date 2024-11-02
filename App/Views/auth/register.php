@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="container flex flex-col md:flex-row px-8 py-4 md:px-16 md:py-8 gap-8">
             <!-- Kolom Formulir -->
             <div class="flex-1">
-                <nav><img src="../../../public//assets//logo 1.png" alt="Logo"></nav>
+                <nav><img src="../../../public//logo 1.png" alt="Logo"></nav>
                 <h1 class="mt-5 font-bold text-4xl md:mt-28">Daftarkan Akunmu Gratis!</h1>
                 <div class="mt-4" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2 );">
                     Akunmu sudah terdaftar? <a href="login.php" class="text-blue-700">Masuk Disini</a>
@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <!-- Kolom Gambar -->
             <div class="flex-1 flex items-center justify-center">
-                <img src="../../../public//assets//Frame 28 (1).png" alt="Gambar Login" class="hidden md:block w-full h-auto object-contain">
+                <img src="../../../public//Frame 28 (1).png" alt="Gambar Login" class="hidden md:block w-full h-auto object-contain">
             </div>
         </div>
     </div>
