@@ -10,44 +10,44 @@ $database = new Database();
 $db = $database->getConnection();
 $user = new User($db);
 
+$error_message = ""; // Inisialisasi variabel untuk pesan error
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Mengambil input dari form dan melakukan sanitasi
     $user->nama_lengkap = htmlspecialchars($_POST['nama_lengkap']);
     $user->nis = htmlspecialchars($_POST['nis']);
     $user->nisn = htmlspecialchars($_POST['nisn']);
     $user->no_kartu = htmlspecialchars($_POST['no_kartu']);
     $user->kelas = htmlspecialchars($_POST['kelas']);
     $user->no_whatsapp = htmlspecialchars($_POST['no_whatsapp']);
-    $user->password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hash password
-    $user->roles = 'user'; // Set default role sebagai 'user'
+    $user->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $user->roles = 'user';
 
-    // Melakukan registrasi pengguna
-    if ($user->register()) {
-        // Menyimpan data session
+    // Proses registrasi dan cek hasil
+    $result = $user->register();
+
+    if ($result === true) {
         $_SESSION['id_user'] = $user->id_user;
         $_SESSION['nama_lengkap'] = $user->nama_lengkap;
         $_SESSION['roles'] = $user->roles;
 
-        // Redirect setelah registrasi sesuai dengan roles
         switch ($user->roles) {
             case 'admin':
                 header("Location: ../admin/dashboard.php");
                 break;
             case 'user':
-                header("Location: ../viewBuku.php");
+                header("Location: ./Landing-page.php");
                 break;
             case 'petugas':
                 header("Location: ../petugas/dashboard.php");
                 break;
-            default:
-                echo "Role tidak dikenali.";
-                break;
         }
         exit();
     } else {
-        echo "Registrasi gagal. Silakan coba lagi.";
+        $error_message = $result; // Menangkap pesan error dari register()
     }
 }
+
+
 ?>
 
 <!doctype html>
@@ -61,6 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../../../output.css" />
+
 
 </head>
 
@@ -118,14 +120,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         No Telp<span class="text-red-500"></span>
                     </label>
                     <input type="text" id="no_whatsapp" name="no_whatsapp" placeholder="08123456789"
-                        class="block w-full h-14 border border-gray-300 rounded-full px-4 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required />
+                        class="block w-full h-14 border border-gray-300 rounded-full px-4 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required autocomplete="off" />
 
                     <!-- Password -->
                     <label for="password" class="block text-sm font-medium text-gray-700 mt-8">
                         Password<span class="text-red-500"></span>
                     </label>
                     <input type="password" id="password" name="password" placeholder="Masukkan kata sandi"
-                        class="block w-full h-14 border border-gray-300 rounded-full px-4 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required />
+                        class="block w-full h-14 border border-gray-300 rounded-full px-4 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required autocomplete="off" />
 
                     <!-- Terms and Conditions -->
                     <div class="flex items-center gap-x-3 mt-4 md:mt-8">
@@ -134,6 +136,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             Saya Menyutujui <a href="#" class="text-blue-500 font-bold">Syarat dan Ketentuan</a>
                         </label>
                     </div>
+
+                    <?php if (!empty($error_message)) : ?>
+                        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                            <strong class="font-bold">Error!</strong>
+                            <span class="block sm:inline"><?php echo $error_message; ?></span>
+                        </div>
+                    <?php endif; ?>
 
                     <!-- Submit Button -->
                     <button type="submit" class="mt-4 px-5 py-3 bg-main text-white rounded-full shadow-lg text-center uppercase w-[100%] md:w-[60%] mx-auto md:mx-0 tracking-wider sm:mt-4 sm:text-base">

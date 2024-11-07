@@ -1,79 +1,47 @@
 <?php
 session_start();
+require_once '../../core/Database.php';
+require_once '../../Models/user.php';
 
-// Sertakan file koneksi ke database dan model user
-require_once __DIR__ . '../../../core/Database.php';
-require_once '../../Models/user.php'; 
-
-// Membuat instance koneksi ke database
 $database = new Database();
 $db = $database->getConnection();
 
 // Cek apakah pengguna sudah login
 if (isset($_SESSION['no_kartu'])) {
-    header("Location: viewBuku.php"); // Redirect ke halaman viewBuku jika sudah login
+    header("Location: ./Landing-page.php");
     exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-  // Membuat instance objek User
-  $user = new User($db);
-  $user->no_kartu = $_POST['no_kartu'] ?? null;
-  $user->password = $_POST['password'] ?? null;
+    $user = new User($db);
+    $user->no_kartu = $_POST['no_kartu'] ?? null;
+    $user->password = $_POST['password'] ?? null;
 
-  // Periksa login
-  if ($user->login()) {
-      // Jika berhasil login, simpan informasi di session
-      $_SESSION['roles'] = $user->roles;
-      $_SESSION['no_kartu'] = $user->no_kartu;
-      $_SESSION['id_user'] = $user->id_user;
-
-      // Redirect sesuai dengan roles
-      switch ($user->roles) {
-          case 'admin':
-              header("Location: ../admin/admin_dashboard.php"); // Ganti dengan path admin
-              break;
-          case 'user':
-              header("Location: ../User/userAbsen.php"); // Ganti dengan path user
-              break;
-          case 'petugas':
-              header("Location: ../petugas/petugas_dashboard.php"); // Ganti dengan path petugas
-              break;
-          default:
-              echo "Role tidak dikenali.";
-              break;
-      }
-      exit();
-  } else {
-      // Tampilkan pesan error jika login gagal
-      echo "Login gagal. Periksa nomor kartu dan password.";
-  }
+    if ($user->login()) {
+        // Redirect sesuai dengan roles
+        switch ($_SESSION['roles']) {
+            case 'admin':
+                header("Location: ../admin/admin_dashboard.php");
+                break;
+            case 'user':
+                header("Location: ../User/userAbsen.php");
+                break;
+            case 'petugas':
+                header("Location: ../petugas/petugas_dashboard.php");
+                break;
+            default:
+                echo "Role tidak dikenali.";
+                break;
+        }
+        exit();
+    } else {
+        $_SESSION['error_message'] = "Login gagal. Periksa nomor kartu dan password.";
+        header("Location: login.php");
+        exit();
+    }
 }
-
-
-
-// // Tangkap input dari form hanya jika form disubmit dengan method POST
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//     $user = new User($db);
-//     $user->no_kartu = $_POST['no_kartu'] ?? null;
-//     $user->password = $_POST['password'] ?? null;
-
-//     // Periksa login
-//     if ($user->login()) {
-//         // Jika berhasil login, simpan informasi di session
-//         $_SESSION['roles'] = $user->roles;
-//         $_SESSION['no_kartu'] = $user->no_kartu;
-//         $_SESSION['id_user'] = $user->id_user;
-
-//         // Redirect ke halaman viewBuku.php setelah login berhasil
-//         header("Location: ../viewBuku.php");
-//         exit();
-//     } else {
-//         // Tampilkan pesan error jika login gagal
-//         echo "Login gagal. Periksa nomor kartu dan password.";
-//     }
-// }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

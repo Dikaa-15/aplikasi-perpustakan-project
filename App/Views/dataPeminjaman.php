@@ -1,10 +1,14 @@
     <?php
     // Mulai sesi
     session_start();
+    // var_dump($_SESSION['profil_user']); // Debugging
+    
+    $id_user = $_SESSION['id_user'];
 
     // Sertakan file koneksi dan class Buku
     include_once '../core/Database.php';
     include_once '../Models/Buku.php';
+    include_once '../Models/user.php';
 
     // Membuat instance koneksi ke database
     $database = new Database();
@@ -16,7 +20,11 @@
         exit();
     }
 
-    $id_user = $_SESSION['id_user'];
+    // Mengambil data profil pengguna
+    $user = new User($db);
+    $profil = $user->getUserProfile($id_user); // Pastikan Anda punya method ini di kelas User
+
+
 
     // Mengambil data peminjaman buku dari database
     $buku = new Buku($db);
@@ -79,24 +87,22 @@
                         <a href="daftarBuku.html"
                             class="flex items-center gap-2 px-4 py-2 group hover:bg-main rounded-lg transition-all duration-300">
                             <img src="../../public//svg//book.svg" alt="" class="w-6 h-6 object-cover" />
-                            
+                            <p class="text-lg text-slate-500 group-hover:text-white">Data Buku</p>
                         </a>
                         <a href=""
                             class="flex items-center gap-2 px-4 py-2 group hover:bg-main rounded-lg transition-all duration-300">
                             <img src="../../public//svg//clipboard-text.svg" alt="" class="w-6 h-6 object-cover" />
                             <p class="text-lg text-slate-500 group-hover:text-white">Data Kunjungan</p>
                         </a>
-                        <a href="profileUser.html"
+                        <a href="../Views/User/account.php"
                             class="flex items-center gap-2 px-4 py-2 group hover:bg-main rounded-lg transition-all duration-300">
                             <img src="../../public//svg//user-octagon.svg" alt="" class="w-6 h-6 object-cover" />
                             <p class="text-lg text-slate-500 group-hover:text-white">Profile</p>
                         </a>
-                        <a href=""
+                        <a href="./auth/logout.php"
                             class="flex items-center gap-2 px-4 py-2 group hover:bg-main rounded-lg transition-all duration-300">
                             <img src="../../public//svg//logout.svg" alt="" class="w-6 h-6 object-cover" />
-                            <a href="../Views//auth//logout.php">
-                                <p class="text-lg text-slate-500 group-hover:text-white">Logout</p>
-                            </a>
+                            <p class="text-lg text-slate-500 group-hover:text-white">Logout</p>
                         </a>
                     </div>
                 </div>
@@ -119,11 +125,11 @@
                                     class="relative flex justify-center items-center gap-2 overflow-hidden rounded-full focus:outline-none">
                                     <div class="w-8 h-8 rounded-full">
                                         <img class="object-cover w-full h-full"
-                                            src="../../public//Image Profile.png"
+                                            src="../../public/profile//<?php echo $profil['profil_user']; ?>"
                                             alt="Your avatar" />
                                     </div>
 
-                                    <p class="font-normal text-sm">Dimas Putra A</p>
+                                    <p class="font-normal text-sm"><?php echo htmlspecialchars($profil['nama_lengkap']) ;?></p>
                                 </button>
 
                                 <div x-show="dropdownOpen" @click="dropdownOpen = false"
@@ -163,9 +169,9 @@
 
                         <!-- Content Detail Peminjaman -->
                         <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-                            <div class="flex items-center gap-6 w-full mb-10" >
+                            <div class="flex items-center gap-6 w-full mb-10" id="book-table">
                                 <!-- Card Buku -->
-                                <div class="w-[270px] hidden md:block shadow-lg rounded-lg bg-white px-3 py-3" id="book-table">
+                                <div class="w-[270px] hidden md:block shadow-lg rounded-lg bg-white px-3 py-3">
                                     <div class="w-[222px] rounded-md mx-auto mb-3">
                                         <img src="../../public//assets//Books/<?= htmlspecialchars($row['cover']) ?>"
                                             class="w-full" alt="Gambar Buku" />
@@ -233,80 +239,68 @@
             </div>
         </div>
 
-        <!-- Absen START-->
-        < <!-- Form Modal Start -->
-            <div id="myModal" class="fixed inset-0 hidden z-50 bg-black bg-opacity-50 flex justify-center items-center">
-                <div class="bg-white rounded-lg w-full max-w-md p-6 relative">
-                    <div class="relative mb-8 md:mb-12">
-                        <h2 class="text-lg md:text-2xl font-bold md:text-center">Absen Perpustakaan</h2>
-                        <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-2xl md:text-4xl absolute top-0 right-0">&times;</button>
-                    </div>
-
-                    <form id="absenForm" method="POST" action="../Controller/prosesAbsen.php">
-                        <div class="mb-3 md:mb-6">
-                            <label for="name" class="block text-lg font-normal text-gray-700 mb-2">Nama Lengkap</label>
-                            <input type="text" name="nama_lengkap" id="name" required class="w-full block flex-1 border" />
-                        </div>
-                        <div class="mb-3 md:mb-6">
-                            <label for="kelas" class="block text-lg font-normal text-gray-700 mb-2">Kelas</label>
-                            <input type="text" name="kelas" id="kelas" required class="w-full block flex-1 border" />
-                        </div>
-                        <div class="mb-3 md:mb-6">
-                            <label for="no_kartu" class="block text-lg font-normal text-gray-700 mb-2">No.Kartu</label>
-                            <input type="text" name="no_kartu" id="card_no" required class="w-full block flex-1 border" />
-                        </div>
-                        <input type="submit" class="bg-main text-black px-4 py-2 block w-full rounded-full" value="Absen">
-                    </form>
-                    <div id="notification" class="hidden p-4 mt-4 rounded bg-red-200 text-red-800"></div>
+        <!-- Form Modal Start -->
+        <div id="myModal" class="fixed inset-0 hidden z-50 bg-black bg-opacity-50 flex justify-center items-center">
+            <div class="bg-white rounded-lg w-full max-w-md p-6 relative">
+                <div class="relative mb-8 md:mb-12">
+                    <h2 class="text-lg md:text-2xl font-bold md:text-center">Absen Perpustakaan</h2>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-2xl md:text-4xl absolute top-0 right-0">
+                        &times;
+                    </button>
                 </div>
+
+                <form id="absenForm" method="POST" action="../Views/User//userAbsen.php">
+                    <!-- Form elements as usual -->
+                    <div class="mb-3 md:mb-6">
+                        <label for="nama_lengkap" class="block text-lg font-normal text-gray-700 mb-2">Nama Lengkap</label>
+                        <input type="text" name="nama_lengkap" id="name" required class="w-full block flex-1 border" />
+                    </div>
+                    <div class="mb-3 md:mb-6">
+                        <label for="kelas" class="block text-lg font-normal text-gray-700 mb-2">Kelas</label>
+                        <input type="text" name="kelas" id="kelas" required class="w-full block flex-1 border" />
+                    </div>
+                    <div class="mb-3 md:mb-6">
+                        <label for="no_kartu" class="block text-lg font-normal text-gray-700 mb-2">No.Kartu</label>
+                        <input type="text" name="no_kartu" id="card_no" required class="w-full block flex-1 border" />
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 block w-full rounded-full" value="absen">Absen</button>
+                </form>
+                <!-- Notifikasi untuk pesan absensi -->
+                <div id="notification" class="hidden p-4 mt-4 rounded bg-red-200 text-red-800"></div>
+
             </div>
+        </div>
         <!-- Form Modal End -->
-         <!-- Absen END-->
 
 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#search').on('keyup', function() {
+                    var query = $(this).val();
 
-            <!-- Buttom Form Submit Start -->
-            <!-- <div class="flex justify-center mt-6">
-            <button
-                type="submit"
-                class="bg-main text-white px-4 py-2 block w-full rounded-full">
-                Pinjam Buku
-            </button>
-        </div> -->
+                    $.ajax({
+                        url: '../Controller/live_searching.php', // URL ke live_searching.php
+                        method: 'POST',
+                        data: {
+                            query: query
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            var rows = '';
+                            if (data.length > 0) {
+                                data.forEach(function(book) {
+                                    var statusClass = '';
+                                    if (book.status_peminjaman === 'proses') {
+                                        statusClass = 'bg-gray-500';
+                                    } else if (book.status_peminjaman === 'sedang dipinjam') {
+                                        statusClass = 'bg-red-500';
+                                    } else if (book.status_peminjaman === 'sudah dikembalikan') {
+                                        statusClass = 'bg-green-500';
+                                    }
 
-            <!-- Buttom Form Submit End -->
-            </form> -->
-            <!-- Form Modal End -->
-
-            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                <!-- Live searching ajax -->
-            <script>
-                $(document).ready(function() {
-                    $('#search').on('keyup', function() {
-                        var query = $(this).val();
-
-                        $.ajax({
-                            url: '../Controller/live_searching.php', // URL ke live_searching.php
-                            method: 'POST',
-                            data: {
-                                query: query
-                            },
-                            dataType: 'json',
-                            success: function(data) {
-                                var rows = '';
-                                if (data.length > 0) {
-                                    data.forEach(function(book) {
-                                        var statusClass = '';
-                                        if (book.status_peminjaman === 'proses') {
-                                            statusClass = 'bg-gray-500';
-                                        } else if (book.status_peminjaman === 'sedang dipinjam') {
-                                            statusClass = 'bg-red-500';
-                                        } else if (book.status_peminjaman === 'sudah dikembalikan') {
-                                            statusClass = 'bg-green-500';
-                                        }
-
-                                        rows += `
-                                    
+                                    rows += `
+                                    <div class="flex items-center gap-6 w-full mb-10">
                                         <!-- Card Buku -->
                                         <div class="w-[270px] hidden md:block shadow-lg rounded-lg bg-white px-3 py-3">
                                             <div class="w-[222px] rounded-md mx-auto mb-3">
@@ -339,104 +333,81 @@
                                             <h2 class="text-[20px] font-bold text-black mb-4">Status Peminjaman</h2>
                                             <div class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 ${statusClass} text-white font-bold text-[20px]">${book.status_peminjaman}</div>
                                         </div>
-                                    `;
-                                    });
-                                } else {
-                                    rows = '<p class="text-center text-gray-500">Tidak ada data ditemukan.</p>';
-                                }
-                                $('#book-table').html(rows); // Hanya hasil pencarian yang ditampilkan
+                                    </div>`;
+                                });
+                            } else {
+                                rows = '<p class="text-center text-gray-500">Tidak ada data ditemukan.</p>';
                             }
-                        });
-                    });
-                });
-            </script>
-
-            <!-- Modal start -->
-
-            <script>
-                // Modal functionality
-                document.addEventListener("DOMContentLoaded", () => {
-                    const openModalButton = document.getElementById("openModal");
-                    const closeModalButton = document.getElementById("closeModal");
-                    const modal = document.getElementById("myModal");
-
-                    openModalButton.addEventListener("click", () => {
-                        modal.classList.remove("hidden");
-                    });
-
-                    closeModalButton.addEventListener("click", () => {
-                        modal.classList.add("hidden");
-                    });
-
-                    window.addEventListener("click", (event) => {
-                        if (event.target === modal) {
-                            modal.classList.add("hidden");
+                            $('#book-table').html(rows); // Hanya hasil pencarian yang ditampilkan
                         }
                     });
                 });
+            });
+        </script>
 
-                // Absensi form submission
-                document.getElementById('absenForm').addEventListener('submit', function(event) {
-                    event.preventDefault();
+        <!-- Modal start -->
 
-                    const formData = new FormData(this);
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const openModalButton = document.getElementById("openModal");
+                const closeModalButton = document.getElementById("closeModal");
+                const modal = document.getElementById("myModal");
 
-                    fetch('../Controller/prosesAbsen.php', {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            const notification = document.getElementById('notification');
-
-                            if (data.status === 'error') {
-                                notification.classList.remove('hidden', 'bg-green-200', 'text-green-800');
-                                notification.classList.add('bg-red-200', 'text-red-800');
-                                notification.innerText = data.message;
-                            } else if (data.status === 'success') {
-                                notification.classList.remove('hidden', 'bg-red-200', 'text-red-800');
-                                notification.classList.add('bg-green-200', 'text-green-800');
-                                notification.innerText = data.message;
-
-                                // Reset form after success
-                                this.reset();
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
+                openModalButton.addEventListener("click", () => {
+                    modal.classList.remove("hidden");
                 });
-            </script>
-            <!-- Modal end -->
 
-            <!-- notifikasi pesan absen start--->
-            <script>
-                document.getElementById('absenForm').addEventListener('submit', function(event) {
-                    event.preventDefault();
-
-                    const formData = new FormData(this);
-
-                    fetch('../Controller/prosesAbsen.php', {
-                            method: 'POST',
-                            body: formData
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            const notification = document.getElementById('notification');
-
-                            // Menampilkan pesan berdasarkan respons
-                            if (data.status === 'error') {
-                                notification.classList.remove('hidden', 'bg-green-200', 'text-green-800');
-                                notification.classList.add('bg-red-200', 'text-red-800');
-                                notification.innerText = data.message;
-                            } else if (data.status === 'success') {
-                                notification.classList.remove('hidden', 'bg-red-200', 'text-red-800');
-                                notification.classList.add('bg-green-200', 'text-green-800');
-                                notification.innerText = data.message;
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
+                closeModalButton.addEventListener("click", () => {
+                    modal.classList.add("hidden");
                 });
-            </script>
-            <!-- notifikasi pesan absen end--->
+
+                window.addEventListener("click", (event) => {
+                    if (event.target === modal) {
+                        modal.classList.add("hidden");
+                    }
+                });
+            });
+        </script>
+        <!-- Modal end -->
+
+        <!-- notifikasi pesan absen start--->
+        <script>
+            document.getElementById('absenForm').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(this);
+
+                fetch('../Views/User/prosesAbsen.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const notification = document.getElementById('notification');
+                        const modal = document.getElementById('myModal');
+
+                        // Tampilkan pesan respons
+                        if (data.status === 'error') {
+                            notification.classList.remove('hidden', 'bg-green-200', 'text-green-800');
+                            notification.classList.add('bg-red-200', 'text-red-800');
+                            notification.innerText = data.message;
+                        } else if (data.status === 'success') {
+                            notification.classList.remove('hidden', 'bg-red-200', 'text-red-800');
+                            notification.classList.add('bg-green-200', 'text-green-800');
+                            notification.innerText = data.message;
+
+                            // Tutup modal setelah 2 detik
+                            setTimeout(() => {
+                                modal.classList.add('hidden'); // Tutup modal
+                                notification.classList.add('hidden'); // Sembunyikan notifikasi
+                                notification.innerText = ''; // Reset teks notifikasi
+                            }, 2000); // 2 detik
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        </script>
+        <!-- notifikasi pesan absen end--->
 
 
     </body>

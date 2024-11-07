@@ -72,7 +72,7 @@
                 </a>
 
                 <a
-                    href="profileUser.html"
+                    href="../Views/User/account.php"
                     class="flex items-center gap-2 px-4 py-2 group hover:bg-main rounded-lg transition-all duration-300">
                     <img
                         src="../../public//svg/user-octagon.svg"

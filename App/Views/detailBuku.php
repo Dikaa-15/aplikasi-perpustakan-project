@@ -136,7 +136,8 @@ if ($_POST) {
 
 <body>
 
-    <?= require_once '../Template/header.php' ?>
+    <!-- <?php require_once '../Template/header.php' ?> -->
+
     <div class="container mx-auto mt-5">
 
 
@@ -178,7 +179,6 @@ if ($_POST) {
                                     <?= htmlspecialchars($buku->stok_buku) ?>
                                 </p>
 
-                                <?php if ($buku->stok_buku > 0): ?>
                                 <button
                                     id="openModal"
                                     class="block w-full md:w-[30%] lg:w-[40%] xl:w-[30%]">
@@ -186,15 +186,6 @@ if ($_POST) {
                                         href="#"
                                         class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300">Pinjam Buku</a>
                                 </button>
-                                <?php else : ?>
-                                <button
-                                    
-                                    class="block w-full md:w-[30%] lg:w-[40%] xl:w-[30%]">
-                                    <a
-                                        href="#"
-                                        class="px-8 py-3 block w-full rounded-full bg-gray-500 text-white text-sm cursor-not-allowed">Pinjam Buku</a>
-                                </button>
-                                <?php endif; ?>
                             </div>
                             <!-- Judul Buku End -->
                         </div>

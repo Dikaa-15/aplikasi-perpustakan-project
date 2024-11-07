@@ -11,7 +11,7 @@ $db = $database->getConnection();
 $buku = new Buku($db);
 
 // Mengambil hanya 4 data buku
-$stmt = $buku->readLimited(4); // Mengambil 4 data buku
+$stmt = $buku->readLimited(12); // Mengambil 4 data buku
 $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -186,32 +186,27 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-    $(document).ready(function() {
-    // Menyimpan konten awal hanya jika pertama kali halaman dimuat
-    var initialContent = $('#book-table').html(); 
-
+        $(document).ready(function() {
     $('#search').on('keyup', function() {
-        var query = $(this).val().trim(); 
-
-        if (query === '') {
-            // Tampilkan data default jika pencarian kosong
-            $('#book-table').html(initialContent);
-            return;
-        }
-
+        var query = $(this).val(); // Mendapatkan input pencarian dari user
         $.ajax({
-            url: '../Controller/live_searching-Books.php',
+            url: '../Controller/live_searching-Books.php', // Panggilan ke file PHP yang meng-handle pencarian
             method: 'POST',
             data: { query: query },
             dataType: 'json',
             success: function(data) {
-                $('#book-table').html(''); // Kosongkan konten sebelum menampilkan hasil
+                // Kosongkan konten yang ada sebelum menampilkan hasil pencarian baru
+                $('#book-table').html('');
 
+                // Jika tidak ada data yang ditemukan, tampilkan pesan
                 if (data.length === 0) {
                     $('#book-table').html('<p class="text-center w-full">Tidak ada hasil yang ditemukan</p>');
                 } else {
                     var rows = '';
                     data.forEach(function(book) {
+                        // Cek jika cover buku tidak ada atau undefined, gunakan gambar default
+                        var cover = book.cover ? book.cover : 'default-cover.png';
+
                         rows += `
                             <div class="w-full shadow-xl rounded-lg mb-6 md:mb-5">
                                 <div class="px-4 py-4">
@@ -223,19 +218,22 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                                     <p class="text-white text-xl font-semibold">Lihat Detail</p>
                                                 </div>
                                             </div>
-                                            <img src="../../public/assets/Books/${book.cover}" class="w-full h-full object-cover rounded-lg" alt="Cover Buku">
+                                            <img src="../../public/assets/Books/${cover}" class="w-full h-full object-cover rounded-lg" alt="Cover Buku">
                                         </div>
                                     </a>
                                     <div class="my-3 px-1">
                                         <div class="flex justify-between items-center mb-3">
                                             <h1 class="font-bold md:text-lg">${book.judul_buku}</h1>
-                                            <p><i class="fa-solid fa-star text-yellow-500 pe-2"></i><span>4.5</span></p>
+                                            <p>
+                                                <i class="fa-solid fa-star text-yellow-500 pe-2"></i><span>4.5</span>
+                                            </p>
                                         </div>
-                                        <p class="text-grey font-normal">${book.penerbit || 'Penerbit tidak diketahui'}</p>
+                                        <p class="text-grey font-normal">${book.penerbit ? book.penerbit : 'Penerbit tidak diketahui'}</p>
                                     </div>
                                 </div>
                             </div>`;
                     });
+                    // Mengisi hasil pencarian ke dalam #book-table
                     $('#book-table').html(rows);
                 }
             }

@@ -39,7 +39,7 @@ class Buku {
         
     }
 
-    public function readLimited($limit = 4) {
+    public function readLimited($limit = 12) {
         // Query untuk mengambil maksimal 4 data buku
         $query = "SELECT id_buku, kode_buku, judul_buku, cover, sinopsis, penerbit FROM " . $this->table_name . " LIMIT :limit";
     
@@ -99,10 +99,6 @@ class Buku {
         return $stmt; // Kembalikan statement untuk di-fetch
     }
     
-    
-    
-
-
     public function getDetailBuku($id_buku) {
         // Query untuk mendapatkan detail buku
         $query = "SELECT * FROM " . $this->table_name . " WHERE id_buku = ? LIMIT 0,1";

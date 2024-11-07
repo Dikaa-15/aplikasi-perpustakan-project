@@ -1,8 +1,6 @@
 <?php
 
-
-include_once '../core/Database.php';
-
+include_once __DIR__ . '/../core/Database.php';
 
 class User
 {
@@ -18,6 +16,7 @@ class User
     public $password;
     public $no_kartu;
     public $roles;
+    public $profil_user;
 
     public function __construct($db)
     {
@@ -106,86 +105,96 @@ class User
 
         return false;
     }
-
     public function register()
     {
-        // Query untuk memasukkan data user
+        $queryCheck = "SELECT COUNT(*) FROM " . $this->table_name . " WHERE no_kartu = :no_kartu OR password = :password";
+        $stmtCheck = $this->conn->prepare($queryCheck);
+        
+        $stmtCheck->bindParam(":no_kartu", $this->no_kartu);
+        $stmtCheck->bindParam(":password", $this->password);
+        
+        $stmtCheck->execute();
+        $count = $stmtCheck->fetchColumn();
+        
+        if ($count > 0) {
+            return "Nomor kartu perpustakaan atau password sudah digunakan. Silakan gunakan yang lain.";
+        }
+    
         $query = "INSERT INTO " . $this->table_name . " 
-        SET nama_lengkap=:nama_lengkap, nis=:nis, nisn=:nisn, no_kartu=:no_kartu, kelas=:kelas, no_whatsapp=:no_whatsapp, 
-            password=:password, roles=:roles";
-
+            SET nama_lengkap=:nama_lengkap, nis=:nis, nisn=:nisn, no_kartu=:no_kartu, kelas=:kelas, no_whatsapp=:no_whatsapp, 
+                password=:password, roles=:roles";
         $stmt = $this->conn->prepare($query);
-
+        
         // Sanitasi input
         $this->nama_lengkap = htmlspecialchars(strip_tags($this->nama_lengkap));
         $this->nis = htmlspecialchars(strip_tags($this->nis));
-        $this->nisn = htmlspecialchars(strip_tags($this->nisn));  // Penambahan sanitasi untuk nisn
+        $this->nisn = htmlspecialchars(strip_tags($this->nisn));
         $this->no_kartu = htmlspecialchars(strip_tags($this->no_kartu));
         $this->kelas = htmlspecialchars(strip_tags($this->kelas));
         $this->no_whatsapp = htmlspecialchars(strip_tags($this->no_whatsapp));
         $this->password = htmlspecialchars(strip_tags($this->password));
         $this->roles = htmlspecialchars(strip_tags($this->roles));
-
-        // Bind data ke query
+        
         $stmt->bindParam(":nama_lengkap", $this->nama_lengkap);
         $stmt->bindParam(":nis", $this->nis);
-        $stmt->bindParam(":nisn", $this->nisn); // Penambahan bindParam untuk nisn
+        $stmt->bindParam(":nisn", $this->nisn);
         $stmt->bindParam(":no_kartu", $this->no_kartu);
         $stmt->bindParam(":kelas", $this->kelas);
         $stmt->bindParam(":no_whatsapp", $this->no_whatsapp);
         $stmt->bindParam(":password", $this->password);
         $stmt->bindParam(":roles", $this->roles);
-
-        // Eksekusi query dan simpan session
+        
         if ($stmt->execute()) {
+            // Simpan data pengguna ke dalam session setelah registrasi berhasil
             $this->id_user = $this->conn->lastInsertId();
-            return true;
+    
+            // Menyimpan data pengguna ke dalam session
+            $_SESSION['user_logged_in'] = true;
+            $_SESSION['id_user'] = $this->id_user;
+            $_SESSION['no_kartu'] = $this->no_kartu;
+            $_SESSION['roles'] = $this->roles;
+            $_SESSION['nama_lengkap'] = $this->nama_lengkap;
+            // Anda bisa menambahkan gambar profil jika ada, misalnya:
+            $_SESSION['profil_user'] = ""; // Atur path gambar profil jika ada
+    
+            return true; // Registrasi berhasil
         }
-
-        return false;
+    
+        return false; // Jika tidak berhasil
     }
-
-
-
+    
+    
     public function login()
-    {
-        $query = "SELECT * FROM " . $this->table_name . " WHERE no_kartu = :no_kartu LIMIT 0,1";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':no_kartu', $this->no_kartu);
-        $stmt->execute();
+{
+    $query = "SELECT * FROM " . $this->table_name . " WHERE no_kartu = :no_kartu LIMIT 0,1";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':no_kartu', $this->no_kartu);
+    $stmt->execute();
 
-        if ($stmt->rowCount() > 0) {
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($stmt->rowCount() > 0) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Debugging data user yang ditemukan
-            error_log('User found: ' . print_r($row, true));
-            error_log('Password hash in DB: ' . $row['password']);
-            error_log('Password entered by user: ' . $this->password);
+        if (password_verify($this->password, $row['password'])) {
+            // Simpan data user ke dalam properti objek
+            $this->id_user = $row['id_user'];
+            $this->roles = $row['roles'];
+            $this->no_kartu = $row['no_kartu'];
+            $this->nama_lengkap = $row['nama_lengkap'];
+            $this->profil_user = $row['profil_user']; // Misalnya untuk path gambar profil
 
-            // Verifikasi password yang dimasukkan dengan yang ada di database
-            if (password_verify($this->password, $row['password'])) {
-                // Menyimpan data user di dalam properti objek
-                $this->id_user = $row['id_user']; // Simpan id_user dari hasil query
-                $this->roles = $row['roles'];
-                $this->no_kartu = $row['no_kartu'];
+            // Simpan data user ke sesi
+            $_SESSION['user_logged_in'] = true;
+            $_SESSION['id_user'] = $this->id_user;
+            $_SESSION['no_kartu'] = $this->no_kartu;
+            $_SESSION['roles'] = $this->roles;
+            $_SESSION['nama_lengkap'] = $this->nama_lengkap;
+            $_SESSION['profil_user'] = $this->profil_user;
 
-                // Menyimpan data ke dalam sesi
-                $_SESSION['id_user'] = $this->id_user;
-                $_SESSION['no_kartu'] = $this->no_kartu;
-                $_SESSION['roles'] = $this->roles;
-
-                return true; // Login berhasil
-            } else {
-                error_log('Password verification failed');
-            }
-        } else {
-            error_log('No user found with no_kartu: ' . $this->no_kartu);
+            return true; // Login berhasil
         }
-        return false;
     }
-
-
-
+    return false;
+}
 
     // Fungsi untuk cek role
     public function checkRole()
@@ -281,24 +290,81 @@ class User
         return false;
     }
 
+     // Fungsi untuk mencatat kunjungan (absensi) baru untuk user
+     public function recordVisit() {
+        $query = "INSERT INTO kunjungan (id_user, tanggal_kunjungan, waktu_kunjungan, keperluan) 
+                  VALUES (:id_user, CURDATE(), CURTIME(), 'Absensi Perpustakaan')";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id_user', $this->id_user);
+        return $stmt->execute();
+    }
 
-
+    public function getUserProfile($id_user)
+{
+    // Query untuk mendapatkan data profil pengguna berdasarkan id_user
+    $query = "SELECT nama_lengkap, profil_user FROM user WHERE id_user = :id_user";
+    
+    // Persiapkan query
+    $stmt = $this->conn->prepare($query);
+    
+    // Bind parameter id_user
+    $stmt->bindParam(':id_user', $id_user);
+    
+    // Eksekusi query
+    $stmt->execute();
+    
+    // Ambil hasil query sebagai array asosiatif
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Jika data ditemukan, kembalikan data tersebut; jika tidak, kembalikan nilai default
+    if ($result) {
+        return $result;
+    } else {
+        return [
+            'nama_lengkap' => 'Nama Tidak Ditemukan',
+            'profil_user' => 'default_profile.png' // Nama file gambar default jika profil tidak ada
+        ];
+    }
+}
 
 
     public function getUserData($id_user)
-    {
-        // Query untuk mengambil data pengguna termasuk password dari database
-        $query = "SELECT nama_lengkap, nis, nisn, kelas, no_whatsapp, no_kartu, password FROM " . $this->table_name . " WHERE id_user = :id_user";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT); // Bind parameter untuk keamanan
-        $stmt->execute();
+{
+    $query = "SELECT nama_lengkap, nis, nisn, kelas, no_whatsapp, no_kartu, password, profil_user FROM " . $this->table_name . " WHERE id_user = :id_user";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+    $stmt->execute();
 
-        // Mengembalikan hasil sebagai array asosiatif
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 
+public function updateProfilePhoto($id_user, $photo_path)
+{
+    $query = "UPDATE " . $this->table_name . " SET profil_user = :profile_photo WHERE id_user = :id_user";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':profile_photo', $photo_path); // Perbaiki parameter ini
+    $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
 
+    return $stmt->execute();
+}
+
+
+public function verifyPassword($id_user, $input_password, $encryption_key)
+{
+    // Ambil password terenkripsi dari database
+    $query = "SELECT password FROM " . $this->table_name . " WHERE id_user = :id_user";
+    $stmt = $this->conn->prepare($query);
+    $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
+    $stmt->execute();
+    $encrypted_password = $stmt->fetchColumn();
+
+    // Dekripsi password untuk melakukan verifikasi
+    $decrypted_password = $this->decryptPassword($encrypted_password, $encryption_key);
+
+    // Cocokkan password input dengan hasil dekripsi
+    return $input_password === $decrypted_password;
+}
 
     function encryptPassword($password, $encryption_key)
     {
@@ -307,7 +373,6 @@ class User
         $encrypted_password = openssl_encrypt($password, 'aes-256-cbc', $encryption_key, 0, $iv);
         return base64_encode($iv . $encrypted_password);
     }
-
 
 
     function decryptPassword($encrypted_password, $encryption_key)
@@ -320,25 +385,23 @@ class User
     }
 
 
-
-
-
-    public function updatePassword($id_user, $new_password)
+    public function updatePassword($id_user, $new_password, $encryption_key)
     {
-        // Melakukan hashing terhadap password baru
-        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-
+        // Enkripsi password baru menggunakan kunci enkripsi
+        $encrypted_password = $this->encryptPassword($new_password, $encryption_key);
+    
         // Query untuk memperbarui password di database
         $query = "UPDATE " . $this->table_name . " SET password = :password WHERE id_user = :id_user";
         $stmt = $this->conn->prepare($query);
-
+    
         // Bind parameter untuk keamanan
-        $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
+        $stmt->bindParam(':password', $encrypted_password, PDO::PARAM_STR);
         $stmt->bindParam(':id_user', $id_user, PDO::PARAM_INT);
-
+    
         // Menjalankan query dan mengembalikan hasilnya
         return $stmt->execute();
     }
+    
 
     public function updateNISN($id_user, $nisn)
     {
