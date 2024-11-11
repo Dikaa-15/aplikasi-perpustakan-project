@@ -135,32 +135,29 @@
     <html lang="en">
 
     <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="../../output.css" rel="stylesheet" />
-    <title>Detail Buku</title>
-    <link
-      rel="shortcut icon"
-      href="../../public/logo 1.png"
-      type="image/x-icon"
-    />
-    <!-- Font Family -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
-      rel="stylesheet"
-    />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="../../output.css" rel="stylesheet" />
+        <title>Detail Buku</title>
+        <link
+            rel="shortcut icon"
+            href="../../public/logo 1.png"
+            type="image/x-icon" />
+        <!-- Font Family -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap"
+            rel="stylesheet" />
 
-    <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-  </head>
+        <!-- Font Awesome -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+            integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer" />
+    </head>
 
     <body>
 
@@ -206,14 +203,25 @@
                                         class="font-normal text-sm md:text-lg text-slate-500 mb-4 md:mb-5">Buku Tersedia :
                                         <?= htmlspecialchars($buku->stok_buku) ?>
                                     </p>
-
-                                    <button
-                                        id="openModal"
-                                        class="block w-full md:w-[30%] lg:w-[40%] xl:w-[30%]">
-                                        <a
-                                            href="#"
-                                            class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300">Pinjam Buku</a>
-                                    </button>
+                                    <?php if($buku->stok_buku > 0 ):?>
+                                    <button id="openModal" class="block w-full md:w-[30%] lg:w-[40%] xl:w-[30%]" <?= $buku->stok_buku > 0 ? '' : 'disabled' ?> > 
+                                        
+                                        
+                                        <a href="#" class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm <?= $buku->stok_buku > 0 ? 'hover:bg-white hover:text-main border hover:border-main transition-all duration-300' : 'bg-gray-400 cursor-not-allowed' ?>">
+                                        Pinjam Buku
+                                        </a>
+                                        
+                                      </button>
+                                      <?php else: ?>
+                                        <button id="openModal" class="block w-full md:w-[30%] lg:w-[40%] xl:w-[30%]" <?= $buku->stok_buku > 0 ? '' : 'disabled' ?> > 
+                                            
+                                            
+                                            <a href="#" class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm cursor-not-allowed <?= $buku->stok_buku > 0 ? 'hover:bg-white hover:text-main border hover:border-main transition-all duration-300' : 'bg-gray-400 cursor-not-allowed' ?>">
+                                            Pinjam Buku
+                                            </a>
+                                            
+                                          </button>
+                                    <?php endif; ?>
                                 </div>
                                 <!-- Judul Buku End -->
                             </div>
@@ -224,242 +232,221 @@
             </section>
             <!-- Main Content Detail Buku Section End -->
             <!-- Form Peminjaman Buku -->
-            <?php if ($buku->stok_buku > 0): ?>
-                <!-- <form id="form-peminjaman" action="" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 mt-5">
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required value="<?= htmlspecialchars($user['nama_lengkap']); ?>" readonly>
-                    </div>
 
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Kelas</label>
-                        <input type="text" name="kelas" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required value="<?= htmlspecialchars($user['kelas']); ?>" readonly>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">No. Kartu</label>
-                        <input type="text" name="no_kartu" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required value="<?= htmlspecialchars($user['no_kartu']); ?>" readonly>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Judul Buku</label>
-                        <input type="text" name="judul_buku" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required value="<?= htmlspecialchars($buku->judul_buku); ?>" readonly>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Jumlah Buku</label>
-                        <input type="number" name="jumlah_buku" placeholder="Masukkan jumlah buku yang ingin dipinjam..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal Peminjaman</label>
-                        <input type="date" name="tanggal_peminjaman" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal Pengembalian</label>
-                        <input type="date" name="tanggal_pengembalian" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
-                    </div>
-
-                    <div class="mb-6">
-                        <input type="checkbox" name="syarat" class="mr-2 leading-tight" required>
-                        <label class="text-sm">Saya telah membaca dan menyetujui Syarat dan Ketentuan</label>
-                    </div>
-
-                    <div class="flex items-center justify-between">
-                        <button type="submit" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Pinjam Buku</button>
-                    </div>
-                </form> -->
-            <?php endif; ?>
         </div>
 
         <!-- Modal -->
-        <div
-        id="myModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 overflow-y-scroll pt-32 md:pt-96 hidden">
-            <div
-            
-                id="modalContent"
-                class="bg-white rounded-3xl shadow-lg px-6 py-4 w-[90%] md:w-[70%] modal-enter">
-                <!-- Header Modal Start -->
-                <div class="relative mb-8 md:mb-12">
-                    <h2 class="text-lg md:text-2xl font-bold md:text-center">
-                        Atur Waktu Peminjaman
-                    </h2>
-                    <button
-                        id="closeModal"
-                        class="text-gray-500 hover:text-gray-700 text-2xl md:text-4xl absolute top-0 right-0">
-                        &times;
-                    </button>
-                </div>
-                <!-- Header Modal End -->
-
-                <!-- Form Modal Start -->
-                <?php if ($buku->stok_buku > 0): ?>
-                    <form method="post">
-                        <div class="mb-3 md:mb-6">
-                            <label
-                                for="name"
-                                class="block text-lg font-normal text-gray-700 mb-2">Nama Lengkap</label>
-                            <input
-                                type="text"
-                                id="name"
-                                placeholder="Masukkan Nama Lengkap"
-                                class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
-                                value="<?= htmlspecialchars($user['nama_lengkap']); ?>" readonly />
-                        </div>
-
-                        <div class="mb-3 md:mb-6">
-                            <label
-                                for="name"
-                                class="block text-lg font-normal text-gray-700 mb-2">Kelas</label>
-                            <input
-                                type="text"
-                                id="name"
-                                placeholder="Kelas..."
-                                class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-smmd:text-[16px] sm:leading-6 rounded-full"
-                                value="<?= htmlspecialchars($user['kelas']); ?>" readonly />
-                        </div>
-
-                        <div class="mb-3 md:mb-6">
-                            <label
-                                for="name"
-                                class="block text-lg font-normal text-gray-700 mb-2">No.Kartu</label>
-                            <input
-                                type="text"
-                                id="name"
-                                placeholder="Masukkan No Kartu Anda"
-                                class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
-                                value="<?= htmlspecialchars($user['no_kartu']); ?>" readonly />
-                        </div>
-
-                        <div class="mb-3 md:mb-6">
-                            <label
-                                for="name"
-                                class="block text-lg font-normal text-gray-700 mb-2">Judul Buku</label>
-                            <input
-                                type="text"
-                                id="name"
-                                placeholder="Masukkan Judul Buku"
-                                class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
-                                value="<?= htmlspecialchars($buku->judul_buku); ?>" readonly />
-                        </div>
-
-                        <div class="mb-3 md:mb-6">
-                            <label
-                                for="jumlah_buku"
-                                class="block text-lg font-normal text-gray-700 mb-2">Jumlah Buku</label>
-                            <input
-                                type="text"
-                                id="jumlah_buku"
-                                name="jumlah_buku"
-                                placeholder="Masukkan jumlah buku yang ingin dipinjam"
-                                required
-                                class="w-full block flex-1 border border-slate-400 bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
-                        </div>
-
-                        <div class="mb-3 md:mb-6">
-                            <label
-                                for="tanggal_peminjaman"
-                                class="block text-lg font-normal text-gray-700 mb-2">Tanggal Peminjaman</label>
-                            <input
-                                name="tanggal_peminjaman"
-                                type="date"
-                                id="tanggal_peminjaman"
-                                placeholder="mm/dd/yy"
-                                required
-                                class="w-full block flex-1 border border-slate-400 bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
-                        </div>
-
-                        <div class="mb-3 md:mb-6">
-                            <label
-                                for="lama_peminjaman"
-                                class="block text-lg font-normal text-gray-700 mb-2">Durasi Peminjaman</label>
-                            <input
-                                name="lama_peminjaman"
-                                type="number"
-                                id="lama_peminjaman"
-                                placeholder="masukan lama peminjaman dalam bentuk angka"
-                                required
-                                class="w-full block flex-1 border border-slate-400 bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
-                        </div>
-
-                        <div class="flex gap-2 items-center">
-                            <input
-                                type="checkbox"
-                                name="remember"
-                                id="remember"
-                                required
-                                class="w-5 h-5" />
-                            <p class="text-[12px] font-normal md:text-sm">
-                                Saya telah membaca dan menyetujui Syarat dan Ketentuan
-                            </p>
-                        </div>
-
-                        <!-- Buttom Form Submit Start -->
-                        <div class="flex justify-center mt-6">
-                            <button
-                                type="submit"
-                                class="bg-main text-white px-4 py-2 block w-full rounded-full">
-                                Pinjam Buku
-                            </button>
-                        </div>
-
-                        <!-- Buttom Form Submit End -->
-                    </form>
-                <?php endif; ?>
-                <!-- Form Modal End -->
-            </div>
+    <div
+      id="myModal"
+      class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden overflow-y-scroll pt-32 md:pt-96"
+    >
+      <div
+        id="modalContent"
+        class="bg-white rounded-3xl shadow-lg px-6 py-4 w-[90%] md:w-[70%] modal-enter"
+      >
+        <!-- Header Modal Start -->
+        <div class="relative mb-8 md:mb-12">
+          <h2 class="text-lg md:text-2xl font-bold md:text-center">
+            Atur Waktu Peminjaman
+          </h2>
+          <button
+            id="closeModal"
+            class="text-gray-500 hover:text-gray-700 text-2xl md:text-4xl absolute top-0 right-0"
+          >
+            &times;
+          </button>
         </div>
+        <!-- Header Modal End -->
+
+        <!-- Form Modal Start -->
+        <?php if ($buku->stok_buku > 0): ?>
+        <form method="post">
+          <div class="mb-3 md:mb-6">
+            <label
+              for="name"
+              class="block text-lg font-normal text-gray-700 mb-2"
+              >Nama Lengkap</label
+            >
+            <input
+              type="text"
+              id="name"
+              name="nama_lengkap"
+              placeholder="Masukkan Nama Lengkap"
+              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
+            />
+          </div>
+
+          <div class="mb-3 md:mb-6">
+            <label
+              for="name"
+              class="block text-lg font-normal text-gray-700 mb-2"
+              >Kelas</label
+            >
+            <input
+              type="text"
+              id="name"
+              placeholder="Kelas..."
+              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-smmd:text-[16px] sm:leading-6 rounded-full"
+            />
+          </div>
+
+          <div class="mb-3 md:mb-6">
+            <label
+              for="name"
+              class="block text-lg font-normal text-gray-700 mb-2"
+              >No.Kartu</label
+            >
+            <input
+              type="text"
+              id="name"
+              placeholder="Masukkan No Kartu Anda"
+              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
+            />
+          </div>
+
+          <div class="mb-3 md:mb-6">
+            <label
+              for="name"
+              class="block text-lg font-normal text-gray-700 mb-2"
+              >Judul Buku</label
+            >
+            <input
+              type="text"
+              id="name"
+              placeholder="Masukkan Judul Buku"
+              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
+            />
+          </div>
+
+          <div class="mb-3 md:mb-6">
+            <label
+              for="jumlah_buku"
+              class="block text-lg font-normal text-gray-700 mb-2"
+              >Jumlah Buku</label
+            >
+            <input
+              type="text"
+              id="jumlah_buku"
+              placeholder="Masukkan jumlah buku yang ingin dipinjam"
+              class="w-full block flex-1 border border-slate-400 bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
+            />
+          </div>
+
+          <div class="mb-3 md:mb-6">
+            <label
+              for="tanggal_peminjaman"
+              class="block text-lg font-normal text-gray-700 mb-2"
+              >Tanggal Peminjaman</label
+            >
+            <input
+              type="date"
+              id="tanggal_peminjaman"
+              name="tanggal_peminjaman"
+              placeholder="mm/dd/yy"
+              class="w-full block flex-1 border border-slate-400 bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
+            />
+          </div>
+
+          <div class="mb-3 md:mb-6">
+            <label
+              for="tanggal_peminjaman"
+              class="block text-lg font-normal text-gray-700 mb-2"
+              >Durasi peminjaman</label
+            >
+            <input
+              type="number  "
+              id="tanggal_peminjaman"
+              name="lama_peminjaman"
+              placeholder="mm/dd/yy"
+              class="w-full block flex-1 border border-slate-400 bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
+            />
+          </div>
+
+          <div class="flex gap-2 items-center">
+            <input
+              type="checkbox"
+              name="remember"
+              id="remember"
+              class="w-5 h-5"
+            />
+            <p class="text-[12px] font-normal md:text-sm">
+              Saya telah membaca dan menyetujui Syarat dan Ketentuan
+            </p>
+          </div>
+
+          <!-- Buttom Form Submit Start -->
+          <div class="flex justify-center mt-6">
+            <button
+              type="submit"
+              class="bg-main text-white px-4 py-2 block w-full rounded-full"
+            >
+              Pinjam Buku
+            </button>
+          </div>
+
+          <!-- Buttom Form Submit End -->
+        </form>
+        <?php endif; ?>
+
+        <!-- Form Modal End -->
+      </div>
+    </div>
         <?php require_once '../Template/footer.php' ?>
 
-         <!-- Scripts JS Start -->
-    <script>
-        // Navbar Fixed
-        const menu = document.getElementById("menu");
-        const faBars = document.querySelector(".fa-bars");
-        const navMobile = document.getElementById("navMobile");
+        <!-- Scripts JS Start -->
+        <script>
+            // Navbar Fixed
+            const menu = document.getElementById("menu");
+            const faBars = document.querySelector(".fa-bars");
+            const navMobile = document.getElementById("navMobile");
 
-        menu.addEventListener("click", function() {
-            faBars.classList.toggle("fa-x");
-            navMobile.classList.toggle("hidden");
+            menu.addEventListener("click", function() {
+                faBars.classList.toggle("fa-x");
+                navMobile.classList.toggle("hidden");
+            });
+
+            // Modal Start
+            // Modal Start
+document.addEventListener("DOMContentLoaded", () => {
+    const openModalButton = document.getElementById("openModal");
+    const closeModalButton = document.getElementById("closeModal");
+    const modal = document.getElementById("myModal");
+    const modalContent = document.querySelector(".modal-enter");
+
+    if (openModalButton) {
+        openModalButton.addEventListener("click", () => {
+            modal.classList.remove("hidden");
+            setTimeout(() => {
+                modalContent.classList.add("modal-enter-active");
+            }, 10);
         });
+    }
 
-        // Modal Start
-        document.addEventListener("DOMContentLoaded", () => {
-            const openModalButton = document.getElementById("openModal");
-            const closeModalButton = document.getElementById("closeModal");
-            const modal = document.getElementById("myModal");
-            const modalContent = document.querySelector(".modal-enter");
-
-            openModalButton.addEventListener("click", () => {
-                modal.classList.remove("hidden");
-                setTimeout(() => {
-                    modalContent.classList.add("modal-enter-active");
-                }, 10);
-            });
-
-            closeModalButton.addEventListener("click", () => {
-                modalContent.classList.remove("modal-enter-active");
-                modalContent.classList.add("modal-leave-active");
-                setTimeout(() => {
-                    modal.classList.add("hidden");
-                    modalContent.classList.remove("modal-leave-active");
-                }, 300);
-            });
-
-            window.addEventListener("click", (event) => {
-                if (event.target === modal) {
-                    modalContent.classList.remove("modal-enter-active");
-                    modalContent.classList.add("modal-leave-active");
-                    setTimeout(() => {
-                        modal.classList.add("hidden");
-                        modalContent.classList.remove("modal-leave-active");
-                    }, 300);
-                }
-            });
+    if (closeModalButton) {
+        closeModalButton.addEventListener("click", () => {
+            modalContent.classList.remove("modal-enter-active");
+            modalContent.classList.add("modal-leave-active");
+            setTimeout(() => {
+                modal.classList.add("hidden");
+                modalContent.classList.remove("modal-leave-active");
+            }, 300);
         });
-    </script>
-    <!-- Scripts JS End -->
+    }
+
+    window.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            modalContent.classList.remove("modal-enter-active");
+            modalContent.classList.add("modal-leave-active");
+            setTimeout(() => {
+                modal.classList.add("hidden");
+                modalContent.classList.remove("modal-leave-active");
+            }, 300);
+        }
+    });
+});
+
+        </script>
+        <!-- Scripts JS End -->
     </body>
 
     </html>
