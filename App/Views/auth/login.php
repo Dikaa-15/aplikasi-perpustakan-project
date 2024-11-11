@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <div>
             <h1 class="font-bold text-3xl mb-4">Selamat Datang</h1>
             <span>Belum punya akun perpus?
-              <a href="#" class="text-main">Daftar disini</a>
+              <a href="./register.php" class="text-main">Daftar disini</a>
             </span>
 
             <!-- Form Login -->

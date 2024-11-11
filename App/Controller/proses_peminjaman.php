@@ -5,14 +5,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_buku = $_POST['id_buku'];
     $kuantitas_buku = $_POST['kuantitas_buku'];
     $tanggal_peminjaman = $_POST['tanggal_peminjaman'];
-    $tanggal_kembalian = $_POST['tanggal_kembalian'];
+    $lama_peminjaman = $_POST['lama_peminjaman']; // Dapatkan lama peminjaman dari form
     // Ambil nama_petugas dari sesi atau sumber lain jika diperlukan
     session_start();
-    $nama_petugas = $_SESSION['nama_petugas']; // Misalnya, nama petugas disimpan dalam sesi
+    $nama_petugas = isset($_SESSION['nama_petugas']) ? $_SESSION['nama_petugas'] : 'Tidak Diketahui';
 
     // Inisialisasi koneksi database
     $database = new Database();
     $db = $database->getConnection();
+
+    // Menghitung tanggal_kembalian berdasarkan tanggal_peminjaman + lama_peminjaman
+    $start_date = DateTime::createFromFormat('Y-m-d', $tanggal_peminjaman);
+    $end_date = clone $start_date;
+    $end_date->modify("+$lama_peminjaman days");
+    $tanggal_kembalian = $end_date->format('Y-m-d');
 
     // Insert data peminjaman
     $query = "INSERT INTO peminjaman (id_buku, kuantitas_buku, tanggal_peminjaman, tanggal_kembalian, status_peminjaman, nama_petugas) 

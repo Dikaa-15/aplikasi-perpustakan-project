@@ -1,6 +1,25 @@
 <?php
 session_start();
+
+require_once '../Models/user.php';
 // var_dump($_SESSION['profil_user']); // Debugging
+
+// Database connection initialization if needed
+if (!isset($db)) {
+    require_once '../core/Database.php';
+    $database = new Database();
+    $db = $database->getConnection();
+}
+
+// Get user profile if logged in
+if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
+    $user = new User($db);
+    $profil = $user->getUserProfile($_SESSION['id_user']);
+    $_SESSION['profil_user'] = $profil['profil_user']; // Update session to ensure consistency
+    $_SESSION['nama_lengkap'] = $profil['nama_lengkap'];
+}
+
+
 ?>
 
 <!-- Header Start -->
@@ -35,8 +54,7 @@ session_start();
                 <!-- Tampilan Profil Jika User Sudah Login -->
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 rounded-full overflow-hidden">
-                        <img src="../../public/profile//<?php echo $_SESSION['profil_user']; ?>" alt="Profile Image" class="w-full h-full object-cover" />
-                    </div>
+                    <img src="../../public/profile//<?php echo htmlspecialchars($_SESSION['profil_user'] ?? 'default_profile.png'); ?>" alt="Profile Image" class="w-full h-full object-cover" />                    </div>
                     <a href="../Views/User/account.php"><p class="font-normal text-sm"><?php echo $_SESSION['nama_lengkap']; ?></p></a>
                 </div>
             <?php else: ?>

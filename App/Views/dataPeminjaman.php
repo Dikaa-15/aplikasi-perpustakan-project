@@ -2,7 +2,7 @@
     // Mulai sesi
     session_start();
     // var_dump($_SESSION['profil_user']); // Debugging
-    
+
     $id_user = $_SESSION['id_user'];
 
     // Sertakan file koneksi dan class Buku
@@ -38,7 +38,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Data Peminjaman</title>
-        <link rel="stylesheet" href="..//..//output.css">
+        <link rel="stylesheet" href="../../output.css">
         <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
         <script src="https://cdn.tailwindcss.com"></script>
 
@@ -84,12 +84,12 @@
                             <img src="../../public//svg//element-equal.svg" alt="" class="w-6 h-6 object-cover" />
                             <p class="text-lg text-slate-500 group-hover:text-white">Dashboard</p>
                         </a>
-                        <a href="daftarBuku.html"
+                        <a href="./DataBuku.php"
                             class="flex items-center gap-2 px-4 py-2 group hover:bg-main rounded-lg transition-all duration-300">
                             <img src="../../public//svg//book.svg" alt="" class="w-6 h-6 object-cover" />
                             <p class="text-lg text-slate-500 group-hover:text-white">Data Buku</p>
                         </a>
-                        <a href=""
+                        <a href="./dataKunjungan.php"
                             class="flex items-center gap-2 px-4 py-2 group hover:bg-main rounded-lg transition-all duration-300">
                             <img src="../../public//svg//clipboard-text.svg" alt="" class="w-6 h-6 object-cover" />
                             <p class="text-lg text-slate-500 group-hover:text-white">Data Kunjungan</p>
@@ -129,7 +129,7 @@
                                             alt="Your avatar" />
                                     </div>
 
-                                    <p class="font-normal text-sm"><?php echo htmlspecialchars($profil['nama_lengkap']) ;?></p>
+                                    <p class="font-normal text-sm"><?php echo htmlspecialchars($profil['nama_lengkap']); ?></p>
                                 </button>
 
                                 <div x-show="dropdownOpen" @click="dropdownOpen = false"
@@ -149,16 +149,17 @@
 
                     <!-- Main Content Start -->
 
-                    <button id="openModal" class="px-4 py-2 bg-main text-black rounded-full">Absen Perpus</button>
                     <main class="flex-1 overflow-x-hidden overflow-y-auto px-4 md:px-8 pt-2">
                         <!-- Search Bar -->
                         <div class="mb-5 md:mb-4">
-                            <div class="w-full mx-auto md:mx-0 md:w-[75%] relative">
+                            <div class="w-full mx-auto md:mx-0 md:w-[75%] flex gap-5">
                                 <input type="text" id="search" placeholder="Search"
                                     class="w-full block flex-1 bg-inputColors px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
-                                <button type="submit" class="absolute right-4 top-3">
+                                <button type="submit" class="ml-[-50px]">
                                     <i class="fa-solid fa-search text-lg text-slate-500"></i>
                                 </button>
+                                <button id="openModal" class="px-4 py-2 text-white bg-main text-black rounded-full">Absen Perpus</button>
+
                             </div>
                         </div>
 
@@ -243,27 +244,30 @@
         <div id="myModal" class="fixed inset-0 hidden z-50 bg-black bg-opacity-50 flex justify-center items-center">
             <div class="bg-white rounded-lg w-full max-w-md p-6 relative">
                 <div class="relative mb-8 md:mb-12">
-                    <h2 class="text-lg md:text-2xl font-bold md:text-center">Absen Perpustakaan</h2>
+                    <h2 class="text-lg md:text-2xl font-bold md:text-center ">Absen Perpustakaan</h2>
                     <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-2xl md:text-4xl absolute top-0 right-0">
                         &times;
                     </button>
                 </div>
 
-                <form id="absenForm" method="POST" action="../Views/User//userAbsen.php">
+                <form id="absenForm" method="POST" action="../Views/User/prosesAbsen.php">
                     <!-- Form elements as usual -->
                     <div class="mb-3 md:mb-6">
                         <label for="nama_lengkap" class="block text-lg font-normal text-gray-700 mb-2">Nama Lengkap</label>
-                        <input type="text" name="nama_lengkap" id="name" required class="w-full block flex-1 border" />
+                        <input type="text" name="nama_lengkap" id="name" required
+                            class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
                     </div>
                     <div class="mb-3 md:mb-6">
                         <label for="kelas" class="block text-lg font-normal text-gray-700 mb-2">Kelas</label>
-                        <input type="text" name="kelas" id="kelas" required class="w-full block flex-1 border" />
+                        <input type="text" name="kelas" id="kelas" required
+                            class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
                     </div>
                     <div class="mb-3 md:mb-6">
                         <label for="no_kartu" class="block text-lg font-normal text-gray-700 mb-2">No.Kartu</label>
-                        <input type="text" name="no_kartu" id="card_no" required class="w-full block flex-1 border" />
+                        <input type="text" name="no_kartu" id="card_no" required
+                            class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
                     </div>
-                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 block w-full rounded-full" value="absen">Absen</button>
+                    <button type="submit" class="bg-main text-white px-4 py-2 block w-full rounded-full" value="absen">Absen</button>
                 </form>
                 <!-- Notifikasi untuk pesan absensi -->
                 <div id="notification" class="hidden p-4 mt-4 rounded bg-red-200 text-red-800"></div>
@@ -300,40 +304,70 @@
                                     }
 
                                     rows += `
-                                    <div class="flex items-center gap-6 w-full mb-10">
-                                        <!-- Card Buku -->
-                                        <div class="w-[270px] hidden md:block shadow-lg rounded-lg bg-white px-3 py-3">
-                                            <div class="w-[222px] rounded-md mx-auto mb-3">
-                                                <img src="../../public/assets/Books/${book.cover}" class="w-full" alt="Gambar Buku" />
-                                            </div>
-                                            <div class="px-3">
-                                                <div class="flex justify-between mb-3">
-                                                    <p class="font-bold text-lg text-black">${book.judul_buku}</p>
-                                                    <div class="flex items-center gap-1">
-                                                        <i class="fa-solid fa-star text-yellow-500"></i>
-                                                        <p class="font-normal">4.5</p>
-                                                    </div>
-                                                </div>
-                                                <p class="font-normal text-sm">${book.sinopsis}</p>
+                                    <div class="flex items-center gap-6 w-full mb-10" id="book-table">
+                                <!-- Card Buku -->
+                                <div class="w-[270px] hidden md:block shadow-lg rounded-lg bg-white px-3 py-3">
+                                    <div class="w-[222px] rounded-md mx-auto mb-3">
+                                        <img src="../../public//assets//Books/${book.cover}"
+                                            class="w-full" alt="Gambar Buku" />
+                                    </div>
+
+                                    <!-- Title -->
+                                    <div class="px-3">
+                                        <div class="flex justify-between mb-3">
+                                            <p class="font-bold text-lg text-black">${book.judul_buku}</p>
+
+                                            <div class="flex items-center gap-1">
+                                                <i class="fa-solid fa-star text-yellow-500"></i>
+                                                <p class="font-normal">4.5</p>
                                             </div>
                                         </div>
-                                        <!-- Card Buku End -->
-                                        <div class="w-full md:w-[450px] h-[353px] mx-auto md:mx-0 bg-inputColors px-4 py-3 rounded-lg overflow-x-hidden">
-                                            <h2 class="text-[28px] font-bold text-black">${book.judul_buku}</h2>
-                                            <p class="font-normal text-sm text-grey my-3">Penerbit: ${book.penerbit}</p>
-                                            <p class="font-bold text-[20px] text-black mb-4">Batas Peminjaman</p>
-                                            <div class="w-fit md:w-[20rem] px-2 md:px-6 py-3 bg-pinkSec flex items-center gap-1 rounded-lg mb-5">
-                                                <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">30</a>
-                                                <a href="" class="px-2 py-1 text-primaryBlue">Day</a>
-                                                <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">24</a>
-                                                <a href="" class="px-2 py-1 text-primaryBlue">Hours</a>
-                                                <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">60</a>
-                                                <a href="" class="px-2 py-1 text-primaryBlue">Sec</a>
-                                            </div>
-                                            <h2 class="text-[20px] font-bold text-black mb-4">Status Peminjaman</h2>
-                                            <div class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 ${statusClass} text-white font-bold text-[20px]">${book.status_peminjaman}</div>
+
+                                        <p class="font-normal text-sm">
+                                            ${book.sinopsis}
+                                        </p>
+                                    </div>
+                                </div>
+                                <!-- Card Buku End -->
+
+                                <!-- Detail Peminjaman -->
+                                <div class="w-full md:w-[450px] h-[353px] mx-auto md:mx-0 bg-inputColors px-4 py-3 rounded-lg overflow-x-hidden">
+                                    <!-- Heading -->
+                                    <div class="">
+                                        <h2 class="text-[28px] font-bold text-black">
+                                            ${book.judul_buku}
+                                        </h2>
+                                        <p class="font-normal text-sm text-grey my-3">
+                                            Penerbit: ${book.penerbit}
+                                        </p>
+                                        <p class="font-bold text-[20px] text-black mb-4">
+                                            Batas Peminjaman
+                                        </p>
+
+                                        <!-- Batas Peminjaman -->
+                                        <div class="w-fit md:w-[20rem] px-2 md:px-6 py-3 bg-pinkSec flex items-center gap-1 rounded-lg mb-5">
+                                            <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">30</a>
+                                            <a href="" class="px-2 py-1 text-primaryBlue">Day</a>
+                                            <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">24</a>
+                                            <a href="" class="px-2 py-1 text-primaryBlue">Hours</a>
+                                            <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">60</a>
+                                            <a href="" class="px-2 py-1 text-primaryBlue">Sec</a>
                                         </div>
-                                    </div>`;
+
+                                        <!-- Status Peminjaman -->
+                                        <h2 class="text-[20px] font-bold text-black mb-4">
+                                            Status Peminjaman
+                                        </h2>
+
+                                        <a href="">
+                                            <div class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 bg-pinkButton text-white font-bold text-[20px] border hover:border-pinkButton hover:bg-white hover:text-pinkButton transition-all duration-300">
+                                                ${book.status_peminjaman}
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Detail Peminjaman End -->
+                            </div>`;
                                 });
                             } else {
                                 rows = '<p class="text-center text-gray-500">Tidak ada data ditemukan.</p>';
@@ -396,12 +430,10 @@
                             notification.classList.add('bg-green-200', 'text-green-800');
                             notification.innerText = data.message;
 
-                            // Tutup modal setelah 2 detik
-                            setTimeout(() => {
-                                modal.classList.add('hidden'); // Tutup modal
-                                notification.classList.add('hidden'); // Sembunyikan notifikasi
-                                notification.innerText = ''; // Reset teks notifikasi
-                            }, 2000); // 2 detik
+                            // Tutup modal sebagai tanda berhasil absen
+                            modal.classList.add('hidden'); // Tutup modal
+                            notification.classList.add('hidden'); // Sembunyikan notifikasi
+                            notification.innerText = ''; // Reset teks notifikasi
                         }
                     })
                     .catch(error => console.error('Error:', error));
