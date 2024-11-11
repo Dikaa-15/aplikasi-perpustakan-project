@@ -112,34 +112,31 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="grid md:grid-cols-2 lg:grid-cols-4 items-center gap-4 mt-14">
           <?php foreach ($books as $data) : ?>
             <a href="detailBuku.php?id_buku=<?= $data['id_buku']; ?>">
-              <div class="w-full shadow-lg rounded-lg mb-6 md:mb-0 flex flex-col h-full">
+              <div class="w-full shadow-lg rounded-lg mb-6 md:mb-0 flex flex-col h-[400px] overflow-hidden">
                 <div class="flex-grow">
                   <div class="px-4 py-4">
-                    <div class="w-full h-[300px] md:h-[222px] lg:h-[310px] rounded-md relative group">
-                      <div class="w-full h-full bg-black bg-opacity-35 items-center justify-center absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 hidden group-hover:flex transition-all duration-700 rounded-lg cursor-pointer">
+                    <div class="w-full h-[222px] lg:h-[250px] rounded-md relative group overflow-hidden">
+                      <div class="w-full h-full bg-black bg-opacity-35 items-center justify-center absolute top-0 left-0 hidden group-hover:flex transition-all duration-700 rounded-lg cursor-pointer">
                         <div class="flex flex-col justify-center items-center gap-2">
                           <i class="fa-regular fa-eye text-white text-5xl md:text-6xl"></i>
-                          <p class="text-white text-xl font-semibold">
-                            Lihat Detail
-                          </p>
+                          <p class="text-white text-xl font-semibold">Lihat Detail</p>
                         </div>
                       </div>
-                      <img src="../../public//assets//Books/<?= $data['cover'] ?>"
+                      <img src="../../public/assets/Books/<?= $data['cover'] ?>"
                         class="w-full h-full object-cover rounded-lg" alt="" />
                     </div>
                   </div>
                 </div>
 
                 <!-- Title and Content -->
-                <div class="my-3 px-1 flex flex-col flex-grow">
+                <div class="my-3 px-4 flex flex-col">
                   <div class="flex justify-between items-center mb-3">
-                    <h1 class="font-bold md:text-lg"><?= $data['judul_buku'] ?></h1>
+                    <h1 class="font-bold text-lg"><?= $data['judul_buku'] ?></h1>
                     <p>
-                      <i class="fa-solid fa-star text-yellow-500 pe-2"></i><span>4.5</span>
+                      <i class="fa-solid fa-star text-yellow-500"></i><span class="ml-1">4.5</span>
                     </p>
                   </div>
-
-                  <p class="text-grey font-normal text-wrap line-clamp-3">
+                  <p class="text-gray-500 font-normal text-sm line-clamp-3">
                     <?= $data['sinopsis'] ?>
                   </p>
                 </div>
@@ -147,10 +144,12 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </a>
           <?php endforeach; ?>
 
-          <div class="flex justify-end md:mt-8">
-            <a href="./DataBuku.php" class="self-start text-sm md:text-lg hover:text-main font-semibold">Lihat Lebih Banyak <i class="fa-solid fa-arrow-right"></i></a>
-          </div>
         </div>
+        <div class="flex justify-end md:mt-8">
+          <a href="./DataBuku.php" class="text-sm md:text-lg hover:text-main font-semibold">Lihat Lebih Banyak <i class="fa-solid fa-arrow-right"></i></a>
+        </div>
+
+
 
       </div>
     </div>
