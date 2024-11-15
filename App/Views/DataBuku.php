@@ -11,7 +11,7 @@ $db = $database->getConnection();
 $buku = new Buku($db);
 
 // Mengambil hanya 4 data buku
-$stmt = $buku->readLimited(12); // Mengambil 4 data buku
+$stmt = $buku->readLimited(16); // Mengambil 4 data buku
 $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -84,7 +84,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                             <input
                                 type="text" id="search"
-                                class="w-full text-sm py-2 md:py-3 pl-10 pr-4 text-gray-700 bg-white border-[2px] border-slate-300 rounded-full dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                                class="w-full text-sm py-2 md:py-3 pl-10 pr-4 text-gray-700 bg-white border-[2px] border-slate-300 rounded-full dark:bg-gray-100 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-40"
                                 placeholder="Cari 300 buku  yang tersedia diperpus digital" />
                         </div>
                     </form>
@@ -117,51 +117,39 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 items-center gap-4 mt-14">
                     <?php foreach ($books as $data) : ?>
 
-                        
-                            <!-- Card 1 Start -->
-                            <div class="w-full shadow-xl rounded-lg mb-6 md:mb-5" id="book-table">
-                                <div class="px-4 py-4">
-                                    <a href="./detailBuku.php?id_buku= <?= $data['id_buku'] ?>">
-                                        <div
-                                            class="w-full h-[300px] md:h-[222px] lg:h-[280px] xl:h-[310px] rounded-md relative group">
-                                            <div
-                                                class="w-full h-full bg-black bg-opacity-35 items-center justify-center absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 hidden group-hover:flex transition-all duration-700 rounded-lg cursor-pointer">
-                                                <div
-                                                    class="flex flex-col justify-center items-center gap-2">
-                                                    <i
-                                                        class="fa-regular fa-eye text-white text-5xl md:text-6xl"></i>
-                                                    <p class="text-white text-xl font-semibold">
-                                                        Lihat Detail
-                                                    </p>
-                                                </div>
+                        <!-- Card Start -->
+                        <div class="w-full h-[450px] shadow-xl rounded-lg mb-6 md:mb-5 flex flex-col overflow-hidden" id="book-table">
+                            <div class="px-4 py-4 flex-grow">
+                                <a href="./Detailbuku.php?id_buku=<?= $data['id_buku'] ?>">
+                                    <div class="w-full h-[280px] md:h-[222px] lg:h-[280px] rounded-md relative group overflow-hidden">
+                                        <div class="w-full h-full bg-black bg-opacity-35 items-center justify-center absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 hidden group-hover:flex transition-all duration-700 rounded-lg cursor-pointer">
+                                            <div class="flex flex-col justify-center items-center gap-2">
+                                                <i class="fa-regular fa-eye text-white text-5xl md:text-6xl"></i>
+                                                <p class="text-white text-xl font-semibold">Lihat Detail</p>
                                             </div>
-                                            <img
-                                                src="../../public//assets//Books/<?= $data['cover'] ?>"
-                                                class="w-full h-full object-cover rounded-lg"
-                                                alt="" />
                                         </div>
-                                    </a>
+                                        <img src="../../public/assets/Books/<?= $data['cover'] ?>"
+                                            class="w-full h-full object-cover rounded-lg" alt="" />
+                                    </div>
+                                </a>
 
-                                    <!-- Title Start -->
-                                    <div class="my-3 px-1">
-                                        <div class="flex justify-between items-center mb-3">
-                                            <h1 class="font-bold md:text-lg"><?= $data['judul_buku'] ?></h1>
-                                            <p>
-                                                <i class="fa-solid fa-star text-yellow-500 pe-2"></i><span>4.5</span>
-                                            </p>
-                                        </div>
-
-                                        <p class="text-grey font-normal">
-                                            <?= $data['sinopsis'] ?>
+                                <!-- Title and Content -->
+                                <div class="my-3 px-1">
+                                    <div class="flex justify-between items-center mb-3">
+                                        <h1 class="font-bold text-lg"><?= $data['judul_buku'] ?></h1>
+                                        <p>
+                                            <i class="fa-solid fa-star text-yellow-500"></i><span class="ml-1">4.5</span>
                                         </p>
                                     </div>
-                                    <!-- Title End -->
+                                    <p class="text-gray-500 font-normal text-sm line-clamp-3"><?= $data['sinopsis'] ?></p>
                                 </div>
                             </div>
-                      
+                        </div>
+                        <!-- Card End -->
+
                     <?php endforeach; ?>
-                    <!-- Card 1 End -->
                 </div>
+
                 <!-- Conntent Buku End -->
 
             </div>
@@ -187,27 +175,29 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
-    $('#search').on('keyup', function() {
-        var query = $(this).val(); // Mendapatkan input pencarian dari user
-        $.ajax({
-            url: '../Controller/live_searching-Books.php', // Panggilan ke file PHP yang meng-handle pencarian
-            method: 'POST',
-            data: { query: query },
-            dataType: 'json',
-            success: function(data) {
-                // Kosongkan konten yang ada sebelum menampilkan hasil pencarian baru
-                $('#book-table').html('');
+            $('#search').on('keyup', function() {
+                var query = $(this).val(); // Mendapatkan input pencarian dari user
+                $.ajax({
+                    url: '../Controller/live_searching-Books.php', // Panggilan ke file PHP yang meng-handle pencarian
+                    method: 'POST',
+                    data: {
+                        query: query
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        // Kosongkan konten yang ada sebelum menampilkan hasil pencarian baru
+                        $('#book-table').html('');
 
-                // Jika tidak ada data yang ditemukan, tampilkan pesan
-                if (data.length === 0) {
-                    $('#book-table').html('<p class="text-center w-full">Tidak ada hasil yang ditemukan</p>');
-                } else {
-                    var rows = '';
-                    data.forEach(function(book) {
-                        // Cek jika cover buku tidak ada atau undefined, gunakan gambar default
-                        var cover = book.cover ? book.cover : 'default-cover.png';
+                        // Jika tidak ada data yang ditemukan, tampilkan pesan
+                        if (data.length === 0) {
+                            $('#book-table').html('<p class="text-center w-full">Tidak ada hasil yang ditemukan</p>');
+                        } else {
+                            var rows = '';
+                            data.forEach(function(book) {
+                                // Cek jika cover buku tidak ada atau undefined, gunakan gambar default
+                                var cover = book.cover ? book.cover : 'default-cover.png';
 
-                        rows += `
+                                rows += `
                             <div class="w-full shadow-xl rounded-lg mb-6 md:mb-5">
                                 <div class="px-4 py-4">
                                     <a href="detailBuku.php?id_buku=${book.id_buku}">
@@ -232,15 +222,14 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     </div>
                                 </div>
                             </div>`;
-                    });
-                    // Mengisi hasil pencarian ke dalam #book-table
-                    $('#book-table').html(rows);
-                }
-            }
+                            });
+                            // Mengisi hasil pencarian ke dalam #book-table
+                            $('#book-table').html(rows);
+                        }
+                    }
+                });
+            });
         });
-    });
-});
-
     </script>
 
 </body>

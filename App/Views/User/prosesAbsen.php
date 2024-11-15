@@ -35,7 +35,7 @@
             // Panggil fungsi absenPerpustakaan dari class User
             if ($user->absenPerpustakaan()) {
                 // Jika absensi berhasil, alihkan user ke halaman successPage.php
-                header("Location: ../dataPeminjaman.php");
+                header("Location: ../dashboard.php");
                 exit(); // Pastikan script berhenti setelah redirect
             } else {
                 // Jika absensi gagal, alihkan ke userabsen.php dengan pesan error

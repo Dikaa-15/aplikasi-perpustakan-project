@@ -14,6 +14,7 @@ class Buku {
     public $penerbit;
     public $sinopsis;
     public $stok_buku;
+    public $url_buku;
 
     public function __construct($db) {
         $this->conn = $db;
@@ -80,11 +81,12 @@ class Buku {
         return $stmt; // Kembalikan statement untuk di-fetch
     }
     public function searchByTitle($query) {
-        // Query untuk mencari buku berdasarkan judul
+        // Query untuk mencari buku berdasarkan judul dengan batas 1 hasil
         $search_query = "
             SELECT b.id_buku, b.judul_buku, b.cover, b.penerbit 
             FROM buku b
-            WHERE b.judul_buku LIKE :search_term";
+            WHERE b.judul_buku LIKE :search_term
+            LIMIT 1"; // Menambahkan LIMIT 1
         
         // Menyiapkan statement
         $stmt = $this->conn->prepare($search_query);
@@ -98,6 +100,7 @@ class Buku {
         
         return $stmt; // Kembalikan statement untuk di-fetch
     }
+    
     
     public function getDetailBuku($id_buku) {
         // Query untuk mendapatkan detail buku
@@ -124,6 +127,7 @@ class Buku {
         $this->penerbit = $row['penerbit'];
         $this->sinopsis = $row['sinopsis'];
         $this->stok_buku = $row['stok_buku'];
+        $this->url_buku = $row['url_buku'];
     }
     public function getPeminjaman($id_user) {
         $query = "

@@ -28,6 +28,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <script src="https://cdn.tailwindcss.com"></script>
 
   <link href="../../output.css" rel="stylesheet" />
+  <link rel="shortcut icon" href="/perpustakaan-jp/public/logo 1.png" type="image/x-icon">
   <title>Document</title>
 
 
@@ -51,7 +52,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
 
-  <?php require_once '../Template/header.php' ?>
+  <!-- <?php require_once '../Template/header.php' ?> -->
 
   <!-- Hero Section Start -->
   <section class="pt-20 md:pt-36 pb-16 xl:pt-52">
@@ -111,7 +112,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- Header End -->
         <div class="grid md:grid-cols-2 lg:grid-cols-4 items-center gap-4 mt-14">
           <?php foreach ($books as $data) : ?>
-            <a href="detailBuku.php?id_buku=<?= $data['id_buku']; ?>">
+            <a href="DetailBuku.php?id_buku=<?= $data['id_buku']; ?>">
               <div class="w-full shadow-lg rounded-lg mb-6 md:mb-0 flex flex-col h-[400px] overflow-hidden">
                 <div class="flex-grow">
                   <div class="px-4 py-4">

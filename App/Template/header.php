@@ -1,5 +1,8 @@
 <?php
-session_start();
+
+if(session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 require_once '../Models/user.php';
 // var_dump($_SESSION['profil_user']); // Debugging
@@ -86,4 +89,19 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
         </div>
     </nav>
 </header>
+<!-- Scripts JS Start -->
+<script>
+      // Navbar Fixed
+      const menu = document.getElementById("menu");
+      const faBars = document.querySelector(".fa-bars");
+      const navMobile = document.getElementById("navMobile");
+
+      menu.addEventListener("click", function () {
+        faBars.classList.toggle("fa-x");
+        navMobile.classList.toggle("hidden");
+      });
+    </script>
+    <!-- Scripts JS End -->
 <!-- Header End -->
+
+

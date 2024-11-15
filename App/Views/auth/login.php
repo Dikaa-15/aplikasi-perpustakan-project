@@ -8,7 +8,7 @@ $db = $database->getConnection();
 
 // Cek apakah pengguna sudah login
 if (isset($_SESSION['no_kartu'])) {
-    header("Location: ./Landing-page.php");
+    header("Location: ./login.php");
     exit();
 }
 
@@ -21,10 +21,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Redirect sesuai dengan roles
         switch ($_SESSION['roles']) {
             case 'admin':
-                header("Location: ../admin/admin_dashboard.php");
+                header("Location: /PERPUSTAKAAN-JP/ADMIN/Views/view.php");
                 break;
             case 'user':
-                header("Location: ../User/userAbsen.php");
+                header("Location: ../dashboard.php");
                 break;
             case 'petugas':
                 header("Location: ../petugas/petugas_dashboard.php");
