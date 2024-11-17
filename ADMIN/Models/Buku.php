@@ -39,8 +39,6 @@ class Buku
         // Batasi panjang data kategori jika diperlukan
         $this->kategori = substr($this->kategori, 0, 100);  // Misalkan kolom di database maksimal 100 karakter
 
-
-
         // Proses upload dan validasi file
         $target_dir = "uploads/";
         $target_file = $target_dir . $_FILES["cover"]["name"];

@@ -314,12 +314,13 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
               </p>
 
               <div class="flex items-center gap-4">
-                <?php if ($buku->kategori === 'online'): ?>
+                <?php if ($buku->kategori === 'online') : ?>
                   <!-- Jika kategori buku adalah "Online", hanya tampilkan tombol Lihat Buku -->
                   <a href="<?php echo $buku->url_buku; ?>" target="_blank" class="px-6 py-2 rounded-full bg-main text-white hover:bg-white hover:text-main hover:border-main transition-all duration-300">
                     <button>Lihat Buku</button>
                   </a>
-                <?php else: ?>
+                <?php else : ?>
+                  <?php if($buku->stok_buku > 0) :?>
                   <!-- Jika kategori buku bukan "Online", hanya tampilkan tombol Pinjam Buku -->
                   <button
                     id="openModal"
@@ -328,6 +329,16 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
                       href="#"
                       class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300">Pinjam Buku</a>
                   </button>
+                  <?php else :?>
+                    <button
+                    id=""
+                    class="block w-full md:w-[30%] cursor-not-allowed opacity-50"
+                    disabled>
+                    <a
+                      href="#"
+                      class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300">Pinjam Buku</a>
+                  </button>
+                  <?php endif;?>
                 <?php endif; ?>
               </div>
 

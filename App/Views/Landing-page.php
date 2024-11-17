@@ -29,7 +29,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   <link href="../../output.css" rel="stylesheet" />
   <link rel="shortcut icon" href="/perpustakaan-jp/public/logo 1.png" type="image/x-icon">
-  <title>Document</title>
+  <title>Landing-page</title>
 
 
 
@@ -94,9 +94,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
   </section>
   <!-- Hero Section End -->
-  <a href="../Views/auth/logout.php">
-    <h1>Logout</h1>
-  </a>
+  
 
 
   <section class="pt-14 pb-20">
@@ -112,7 +110,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- Header End -->
         <div class="grid md:grid-cols-2 lg:grid-cols-4 items-center gap-4 mt-14">
           <?php foreach ($books as $data) : ?>
-            <a href="DetailBuku.php?id_buku=<?= $data['id_buku']; ?>">
+            <a href="detailBuku-try.php?id_buku=<?= $data['id_buku']; ?>">
               <div class="w-full shadow-lg rounded-lg mb-6 md:mb-0 flex flex-col h-[400px] overflow-hidden">
                 <div class="flex-grow">
                   <div class="px-4 py-4">

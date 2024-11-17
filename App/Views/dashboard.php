@@ -264,24 +264,34 @@
                                         </p>
 
                                         <!-- Batas Peminjaman -->
-                                        <div class="w-fit md:w-[20rem] px-2 md:px-6 py-3 bg-pinkSec flex items-center gap-1 rounded-lg mb-5">
+                                        <!-- <div class="w-fit md:w-[20rem] px-2 md:px-6 py-3 bg-pinkSec flex items-center gap-1 rounded-lg mb-5">
                                             <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">30</a>
                                             <a href="" class="px-2 py-1 text-primaryBlue">Day</a>
                                             <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">24</a>
                                             <a href="" class="px-2 py-1 text-primaryBlue">Hours</a>
                                             <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">60</a>
                                             <a href="" class="px-2 py-1 text-primaryBlue">Sec</a>
-                                        </div>
+                                        </div> -->
 
+                                        <div>
+                                            <span class="px-2 py-1 text-white rounded-md bg-primaryBlue"><?= htmlspecialchars($row['tanggal_kembalian']) ?></span>
+                                        </div>
                                         <!-- Status Peminjaman -->
                                         <h2 class="text-[20px] font-bold text-black mb-4">
                                             Status Peminjaman
                                         </h2>
 
                                         <a href="">
+                                            <?php if($row['status_peminjaman'] === "proses" || $row['status_peminjaman'] === "sedang dipinjam" || $row['status_peminjaman'] === "telat mengembalikan"): ?>
                                             <div class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 bg-pinkButton text-white font-bold text-[20px] border hover:border-pinkButton hover:bg-white hover:text-pinkButton transition-all duration-300">
                                                 <?= htmlspecialchars($row['status_peminjaman']) ?>
                                             </div>
+                                            <?php elseif ($row['status_peminjaman'] === "sudah dikembalikan") : ?>
+                                                <div class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 bg-green-500 text-white font-bold text-[20px] border hover:border-green-500 hover:bg-white hover:text-green-500  transition-all duration-300">
+                                                <?= htmlspecialchars($row['status_peminjaman']) ?>
+                                            </div>
+                        
+                                            <?php endif; ?>
                                         </a>
                                     </div>
                                 </div>

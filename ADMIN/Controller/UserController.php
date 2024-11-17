@@ -65,4 +65,9 @@ class UserController {
             return "Failed to delete user.";
         }
     }
+    
+    public function searchUsers($query) {
+        $stmt = $this->user->search($query);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

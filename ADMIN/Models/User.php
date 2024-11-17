@@ -91,6 +91,14 @@ class User {
 
         return false;
     }
+    public function search($query) {
+        $query = "%" . htmlspecialchars(strip_tags($query)) . "%";
+        $sql = "SELECT * FROM " . $this->table_name . " WHERE nama_lengkap LIKE :query OR nis LIKE :query OR kelas LIKE :query";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(":query", $query);
+        $stmt->execute();
+        return $stmt;
+    }
 }
 
 

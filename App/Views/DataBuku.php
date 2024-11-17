@@ -120,7 +120,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <!-- Card Start -->
                         <div class="w-full h-[450px] shadow-xl rounded-lg mb-6 md:mb-5 flex flex-col overflow-hidden" id="book-table">
                             <div class="px-4 py-4 flex-grow">
-                                <a href="./Detailbuku.php?id_buku=<?= $data['id_buku'] ?>">
+                                <a href="./detailBuku-try.php?id_buku=<?= $data['id_buku'] ?>">
                                     <div class="w-full h-[280px] md:h-[222px] lg:h-[280px] rounded-md relative group overflow-hidden">
                                         <div class="w-full h-full bg-black bg-opacity-35 items-center justify-center absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 hidden group-hover:flex transition-all duration-700 rounded-lg cursor-pointer">
                                             <div class="flex flex-col justify-center items-center gap-2">

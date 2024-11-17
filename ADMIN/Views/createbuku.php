@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Handle file upload for cover
     if(isset($_FILES['cover']) && $_FILES['cover']['error'] == 0) {
-        $target_dir = "uploads/";
+        $target_dir = "../../public/assets/Books/";
         $target_file = $target_dir . basename($_FILES["cover"]["name"]);
         if (move_uploaded_file($_FILES["cover"]["tmp_name"], $target_file)) {
             $buku->cover = $target_file;
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if($buku->create()) {
         echo "Buku berhasil ditambahkan.";
-        header("Location: DataBuku.php");
+        header("Location: ./index.php");
     } else {
         echo "Gagal menambahkan buku.";
     }

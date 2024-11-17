@@ -321,7 +321,7 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
                     href="#"
                     class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300">Pinjam Buku</a>
                 </button>
-                <a href="https://buku.kemdikbud.go.id/katalog/English-for-Nusantara-untuk-SMPMTs-Kelas-VII" class="px-6 py-2  rounded-full bg-main text-white hover:bg-white hover:text-main hover:border-main transition-all duration-300">
+                <a href="https://buku.kemdikbud.go.id/katalog/English-for-Nusantara-untuk-SMPMTs-Kelas-VII" class="px-6 py-3  rounded-full bg-main text-white hover:bg-white hover:text-main hover:border-main transition-all duration-300">
                   <button>Lihat buku</button>
                 </a>
               </div>

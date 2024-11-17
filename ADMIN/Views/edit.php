@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $result = $userController->updateUser($_POST);
     
     if ($result) {
-        header('Location: User.php?status=updated'); // Redirect ke view.php dengan status updated
+        header('Location: view.php?status=updated'); // Redirect ke view.php dengan status updated
         exit();
     } else {
         echo "Failed to update user.";
@@ -74,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div>
                 <label class="block text-gray-700">Password</label>
                 <input type="password" name="password"
-                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" >
             </div>
             <div>
                 <label class="block text-gray-700">No Kartu</label>
