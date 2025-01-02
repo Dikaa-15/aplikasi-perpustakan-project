@@ -1,6 +1,15 @@
-
 <?php
 require_once '../Controller/UserController.php';
+
+
+session_start();
+
+// Pastikan pengguna sudah login
+if (!isset($_SESSION['id_user'])) {
+    header("Location: ");
+    exit();
+}
+
 
 $userController = new UserController();
 

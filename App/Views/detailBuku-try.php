@@ -214,15 +214,18 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
       </div>
 
       <!-- Nav Content End Start -->
-      <div class="hidden md:flex items-center gap-1">
+      <div class="hidden md:flex items-center gap-1 cursor-pointer">
         <div class="w-8 h-8">
           <img
             src="../../public/profile//<?php echo htmlspecialchars($_SESSION['profil_user'] ?? 'default_profile.png'); ?>"
             alt=""
             class="w-full h-full rounded-full object-cover" />
         </div>
-        <p class="font-normal text-sm"><?php echo $_SESSION['nama_lengkap']; ?></p>
-        <img src="../public/svg/arrow-down.svg" alt="" class="w-4 h-4" />
+        <a href="./User/account.php">
+          <p class="font-normal text-sm"><?php echo $_SESSION['nama_lengkap']; ?></p>
+        </a>
+
+
       </div>
       <!-- Nav Content End End -->
 
@@ -308,10 +311,13 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
                 <?= htmlspecialchars($buku->sinopsis) ?>
               </p>
 
-              <p
-                class="font-normal text-sm md:text-lg text-slate-500 mb-4 md:mb-5">
-                Buku Tersedia : <?= htmlspecialchars($buku->stok_buku) ?>
-              </p>
+              <?php if ($buku->kategori == 'online') : ?>
+              <?php else : ?>
+                <p
+                  class="font-normal text-sm md:text-lg text-slate-500 mb-4 md:mb-5">
+                  Buku Tersedia : <?= htmlspecialchars($buku->stok_buku) ?>
+                </p>
+              <?php endif; ?>
 
               <div class="flex items-center gap-4">
                 <?php if ($buku->kategori === 'online') : ?>
@@ -320,25 +326,25 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
                     <button>Lihat Buku</button>
                   </a>
                 <?php else : ?>
-                  <?php if($buku->stok_buku > 0) :?>
-                  <!-- Jika kategori buku bukan "Online", hanya tampilkan tombol Pinjam Buku -->
-                  <button
-                    id="openModal"
-                    class="block w-full md:w-[30%] lg:w-[40%] xl:w-[30%]">
-                    <a
-                      href="#"
-                      class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300">Pinjam Buku</a>
-                  </button>
-                  <?php else :?>
+                  <?php if ($buku->stok_buku > 0) : ?>
+                    <!-- Jika kategori buku bukan "Online", hanya tampilkan tombol Pinjam Buku -->
                     <button
-                    id=""
-                    class="block w-full md:w-[30%] cursor-not-allowed opacity-50"
-                    disabled>
-                    <a
-                      href="#"
-                      class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300">Pinjam Buku</a>
-                  </button>
-                  <?php endif;?>
+                      id="openModal"
+                      class="block w-full md:w-[30%] lg:w-[40%] xl:w-[30%]">
+                      <a
+                        href="#"
+                        class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300">Pinjam Buku</a>
+                    </button>
+                  <?php else : ?>
+                    <button
+                      id=""
+                      class="block w-full md:w-[30%] cursor-not-allowed opacity-50"
+                      disabled>
+                      <a
+                        href="#"
+                        class="px-8 py-3 block w-full rounded-full bg-main text-white text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300">Pinjam Buku</a>
+                    </button>
+                  <?php endif; ?>
                 <?php endif; ?>
               </div>
 
@@ -384,10 +390,11 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
               class="block text-lg font-normal text-gray-700 mb-2">Nama Lengkap</label>
             <input
               type="text"
-              id="name"
+              id="nama_lengkap"
               name="nama_lengkap"
               placeholder="Masukkan Nama Lengkap"
-              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
+              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full"
+              value="<?= $_SESSION['nama_lengkap']; ?>" disabled />
           </div>
 
           <div class="mb-3 md:mb-6">
@@ -396,10 +403,11 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
               class="block text-lg font-normal text-gray-700 mb-2">Kelas</label>
             <input
               type="text"
-              id="name"
+              id="kelas"
               name="kelas"
               placeholder="Kelas..."
-              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-smmd:text-[16px] sm:leading-6 rounded-full" />
+              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-smmd:text-[16px] sm:leading-6 rounded-full" 
+              value="<?= $_SESSION['kelas']; ?>"/>
           </div>
 
           <div class="mb-3 md:mb-6">
@@ -409,10 +417,11 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
               class="block text-lg font-normal text-gray-700 mb-2">No.Kartu</label>
             <input
               type="text"
-              id="name"
+              id="no_kartu"
               name="no_kartu"
               placeholder="Masukkan No Kartu Anda"
-              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
+              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" 
+              value="<?= $_SESSION['no_kartu']; ?>" disabled/>
           </div>
 
           <div class="mb-3 md:mb-6">
@@ -421,10 +430,11 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
               class="block text-lg font-normal text-gray-700 mb-2">Judul Buku</label>
             <input
               type="text"
-              id="name"
+              id="judul_buku"
               name="judul_buku"
               placeholder="Masukkan Judul Buku"
-              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
+              class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" 
+              />
           </div>
 
           <div class="mb-3 md:mb-6">
@@ -433,7 +443,7 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
               class="block text-lg font-normal text-gray-700 mb-2">Jumlah Buku</label>
             <input
               type="text"
-              id="name"
+              id="kuantitas_buku"
               name="kuantitas_buku"
               required
               placeholder="Masukkan jumlah buku yang ingin dipinjam"
@@ -490,10 +500,6 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
       <!-- Form Modal End -->
     </div>
   </div>
-
-
-
-
 
 
   <?php require_once '../Template/footer.php'; ?>

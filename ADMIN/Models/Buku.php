@@ -12,6 +12,7 @@ class Buku
     public $penerbit;
     public $sinopsis;
     public $stok_buku;
+    public $url_buku;
 
     public function __construct($db)
     {
@@ -23,7 +24,7 @@ class Buku
     {
         $query = "INSERT INTO " . $this->table_name . " 
                         SET kode_buku=:kode_buku, judul_buku=:judul_buku, kategori=:kategori, 
-                            cover=:cover, penerbit=:penerbit, sinopsis=:sinopsis, stok_buku=:stok_buku";
+                            cover=:cover, penerbit=:penerbit, sinopsis=:sinopsis, stok_buku=:stok_buku, url_buku=:url_buku";
 
         $stmt = $this->conn->prepare($query);
 
@@ -35,6 +36,7 @@ class Buku
         $this->penerbit = htmlspecialchars(strip_tags($this->penerbit));
         $this->sinopsis = htmlspecialchars(strip_tags($this->sinopsis));
         $this->stok_buku = htmlspecialchars(strip_tags($this->stok_buku));
+        $this->url_buku = htmlspecialchars(strip_tags($this->url_buku));
 
         // Batasi panjang data kategori jika diperlukan
         $this->kategori = substr($this->kategori, 0, 100);  // Misalkan kolom di database maksimal 100 karakter
@@ -70,6 +72,7 @@ class Buku
         $stmt->bindParam(":penerbit", $this->penerbit);
         $stmt->bindParam(":sinopsis", $this->sinopsis);
         $stmt->bindParam(":stok_buku", $this->stok_buku);
+        $stmt->bindParam(":url_buku", $this->url_buku);
 
         try {
             if ($stmt->execute()) {
@@ -245,6 +248,15 @@ class Buku
         $query = "SELECT * FROM buku WHERE judul_buku LIKE :keyword";
         $stmt = $this->conn->prepare($query);
         $stmt->bindValue(':keyword', "%$keyword%", PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt;
+    }
+
+    public function search($searchQuery) {
+        $query = "SELECT * FROM " . $this->table_name . " WHERE judul_buku LIKE :searchQuery";
+        $stmt = $this->conn->prepare($query);
+        $searchTerm = "%" . htmlspecialchars(strip_tags($searchQuery)) . "%";
+        $stmt->bindParam(':searchQuery', $searchTerm);
         $stmt->execute();
         return $stmt;
     }

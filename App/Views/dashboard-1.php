@@ -1,61 +1,61 @@
 <?php
-    // Mulai sesi
-    session_start();
-    // var_dump($_SESSION['profil_user']); // Debugging
+// Mulai sesi
+session_start();
+// var_dump($_SESSION['profil_user']); // Debugging
 
-    $id_user = $_SESSION['id_user'];
+$id_user = $_SESSION['id_user'];
 
-    // Sertakan file koneksi dan class Buku
-    include_once '../core/Database.php';
-    include_once '../Models/Buku.php';
-    include_once '../Models/user.php';
+// Sertakan file koneksi dan class Buku
+include_once '../core/Database.php';
+include_once '../Models/Buku.php';
+include_once '../Models/user.php';
 
-    // Membuat instance koneksi ke database
-    $database = new Database();
-    $db = $database->getConnection();
+// Membuat instance koneksi ke database
+$database = new Database();
+$db = $database->getConnection();
 
-    // Pastikan pengguna sudah login
-    if (!isset($_SESSION['id_user'])) {
-        header("Location: ../Views/auth/login.php");
-        exit();
-    }
+// Pastikan pengguna sudah login
+if (!isset($_SESSION['id_user'])) {
+    header("Location: ../Views/auth/login.php");
+    exit();
+}
 
-    // Mengambil data profil pengguna
-    $user = new User($db);
-    $profil = $user->getUserProfile($id_user); // Pastikan Anda punya method ini di kelas User
+// Mengambil data profil pengguna
+$user = new User($db);
+$profil = $user->getUserProfile($id_user); // Pastikan Anda punya method ini di kelas User
 
 
 
-    // Mengambil data peminjaman buku dari database
-    $buku = new Buku($db);
-    $stmt = $buku->getPeminjaman($id_user);
-    ?>
+// Mengambil data peminjaman buku dari database
+$buku = new Buku($db);
+$stmt = $buku->getPeminjaman($id_user);
+?>
 
-    <!DOCTYPE html>
-    <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Data Peminjaman</title>
-        <link rel="stylesheet" href="../../output.css">
-        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-        <script src="https://cdn.tailwindcss.com"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Peminjaman</title>
+    <link rel="stylesheet" href="../../output.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
 
-        <!-- Font Family -->
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" />
+    <!-- Font Family -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet" />
 
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-            integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-            crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    </head>
+</head>
 
-    <body class="bg-gray-100">
-        <!-- <button
+<body class="bg-gray-100">
+    <!-- <button
             id="openModal"
             class="block w-full md:w-[30%] lg:w-[40%] xl:w-[30%]">
             <a
@@ -63,22 +63,22 @@
                 class="px-8 py-3 block w-full rounded-full bg-main text-black text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300">Pinjam Buku</a>
         </button> -->
 
-        <div>
-            <div x-data="{ sidebarOpen: false }" class="flex h-screen">
-                <div :class="sidebarOpen ? 'block' : 'hidden'" @click="sidebarOpen = false"
-                    class="fixed inset-0 z-20 transition-opacity bg-black opacity-50 lg:hidden"></div>
+    <div>
+        <div x-data="{ sidebarOpen: false }" class="flex h-screen">
+            <div :class="sidebarOpen ? 'block' : 'hidden'" @click="sidebarOpen = false"
+                class="fixed inset-0 z-20 transition-opacity bg-black opacity-50 lg:hidden"></div>
 
-                <!-- Sidebar -->
-                <div :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'"
-                    class="fixed left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-pinkSec lg:translate-x-0 lg:static lg:inset-0 h-screen">
-                    <div class="flex items-center justify-center pt-8 mb-8">
-                        <a href="./Landing-page.php">
-                            <img src="../../public//logo 1.png" alt="" />
-                        </a>
-                    </div>
+            <!-- Sidebar -->
+            <div :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'"
+                class="fixed left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-pinkSec lg:translate-x-0 lg:static lg:inset-0 h-screen">
+                <div class="flex items-center justify-center pt-8 mb-8">
+                    <a href="./Landing-page.php">
+                        <img src="../../public//logo 1.png" alt="" />
+                    </a>
+                </div>
 
-                    <!-- Nav Menu Start -->
-                  <div class="flex flex-col gap-4 px-4 py-8">
+                <!-- Nav Menu Start -->
+                <div class="flex flex-col gap-4 px-4 py-8">
                     <?php
                     // Menentukan halaman aktif
                     $current_page = basename($_SERVER['PHP_SELF']);
@@ -156,255 +156,262 @@
                             Logout
                         </p>
                     </a>
-                  </div>
+                </div>
                 <!-- Nav Menu End -->
-                </div>
-
-                <!-- Main Content -->
-                <div class="flex flex-col flex-1 overflow-hidden">
-                    <header class="flex items-center justify-between px-6 py-4">
-                        <div class="flex items-center">
-                            <button @click="sidebarOpen = true" class="text-gray-500 focus:outline-none lg:hidden">
-                                <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M4 6H20M4 12H20M4 18H11" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"></path>
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div class="flex items-center">
-                            <div x-data="{ dropdownOpen: false }" class="relative">
-                                <button @click="dropdownOpen = ! dropdownOpen"
-                                    class="relative flex justify-center items-center gap-2 overflow-hidden rounded-full focus:outline-none">
-                                    <div class="w-8 h-8 rounded-full">
-                                        <img class="object-cover w-full h-full"
-                                            src="../../public/profile//<?php echo $profil['profil_user']; ?>"
-                                            alt="Your avatar" />
-                                    </div>
-
-                                    <p class="font-normal text-sm"><?php echo htmlspecialchars($profil['nama_lengkap']); ?></p>
-                                </button>
-
-                                <div x-show="dropdownOpen" @click="dropdownOpen = false"
-                                    class="fixed inset-0 z-10 w-full h-full" style="display: none"></div>
-
-                                <!-- Dropdown Profile -->
-                                <div x-show="dropdownOpen"
-                                    class="absolute right-0 z-10 w-48 mt-2 overflow-hidden bg-white rounded-md shadow-xl"
-                                    style="display: none">
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Profile</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Products</a>
-                                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Logout</a>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
-
-                    <!-- Main Content Start -->
-
-                    <main class="flex-1 overflow-x-hidden overflow-y-auto px-4 md:px-8 pt-2">
-                        <!-- Search Bar -->
-                        <div class="mb-5 md:mb-4">
-                            <div class="w-full mx-auto md:mx-0 md:w-[75%] flex gap-5">
-                                <input type="text" id="search" placeholder="Search"
-                                    class="w-full block flex-1 bg-inputColors px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
-                                <button type="submit" class="ml-[-50px]">
-                                    <i class="fa-solid fa-search text-lg text-slate-500"></i>
-                                </button>
-                                <button id="openModal" class="px-4 py-2 text-white bg-main text-black rounded-full">Absen Perpus</button>
-
-                            </div>
-                        </div>
-
-                        <!-- Heading -->
-                        <div class="mb-4 md:mb-8">
-                            <h2 class="font-bold text-2xl text-black">Data Peminjaman</h2>
-                        </div>
-
-                        <!-- Content Detail Peminjaman -->
-                        <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-                            <div class="flex items-center gap-6 w-full mb-10" id="book-table">
-                                <!-- Card Buku -->
-                                <div class="w-[270px] hidden md:block shadow-lg rounded-lg bg-white px-3 py-3">
-                                    <div class="w-[222px] rounded-md mx-auto mb-3">
-                                        <img src="../../public//assets//Books/<?= htmlspecialchars($row['cover']) ?>"
-                                            class="w-full" alt="Gambar Buku" />
-                                    </div>
-
-                                    <!-- Title -->
-                                    <div class="px-3">
-                                        <div class="flex justify-between mb-3">
-                                            <p class="font-bold text-lg text-black"><?= htmlspecialchars($row['judul_buku']) ?></p>
-
-                                            <div class="flex items-center gap-1">
-                                                <i class="fa-solid fa-star text-yellow-500"></i>
-                                                <p class="font-normal">4.5</p>
-                                            </div>
-                                        </div>
-
-                                        <p class="font-normal text-sm">
-                                            <?= htmlspecialchars($row['sinopsis']) ?>
-                                        </p>
-                                    </div>
-                                </div>
-                                <!-- Card Buku End -->
-
-                                <!-- Detail Peminjaman -->
-                                <div class="w-full md:w-[450px] h-[353px] mx-auto md:mx-0 bg-inputColors px-4 py-3 rounded-lg overflow-x-hidden">
-                                    <!-- Heading -->
-                                    <div class="">
-                                        <h2 class="text-[28px] font-bold text-black">
-                                            <?= htmlspecialchars($row['judul_buku']) ?>
-                                        </h2>
-                                        <p class="font-normal text-sm text-grey my-3">
-                                            Penerbit: <?= htmlspecialchars($row['penerbit']) ?>
-                                        </p>
-                                        <p class="font-bold text-[20px] text-black mb-4">
-                                            Batas Peminjaman
-                                        </p>
-
-                                        <!-- Batas Peminjaman -->
-                                        <div class="w-fit md:w-[20rem] px-2 md:px-6 py-3 bg-pinkSec flex items-center gap-1 rounded-lg mb-5">
-                                            <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">30</a>
-                                            <a href="" class="px-2 py-1 text-primaryBlue">Day</a>
-                                            <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">24</a>
-                                            <a href="" class="px-2 py-1 text-primaryBlue">Hours</a>
-                                            <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">60</a>
-                                            <a href="" class="px-2 py-1 text-primaryBlue">Sec</a>
-                                        </div>
-
-                                        <!-- Status Peminjaman -->
-                                        <h2 class="text-[20px] font-bold text-black mb-4">
-                                            Status Peminjaman
-                                        </h2>
-
-                                        <a href="">
-                                            <div class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 bg-pinkButton text-white font-bold text-[20px] border hover:border-pinkButton hover:bg-white hover:text-pinkButton transition-all duration-300">
-                                                <?= htmlspecialchars($row['status_peminjaman']) ?>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                                <!-- Detail Peminjaman End -->
-                            </div>
-                        <?php endwhile ?>
-                    </main>
-                </div>
             </div>
-        </div>
 
-        <!-- Modal -->
-        <div
-            id="myModal"
-            class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden overflow-y-scroll pt-10 md:pt-10 lg:pl-16">
-            <div
-                id="modalContent"
-                class="bg-white rounded-3xl shadow-lg px-6 py-4 w-[80%] md:w-[60%] modal-enter">
-                <!-- Header Modal Start -->
-                <div class="relative mb-8 md:mb-12">
-                    <h2 class="text-lg md:text-2xl font-bold md:text-center">
-                        Absen Perpustakaan
-                    </h2>
-                    <button
-                        id="closeModal"
-                        class="text-gray-500 hover:text-gray-700 text-2xl md:text-4xl absolute top-0 right-0">
-                        &times;
-                    </button>
-                </div>
-                <!-- Header Modal End -->
-
-                <!-- Form Modal Start -->
-                <form method="post" action="../Views/User/prosesAbsen.php">
-                    <div class="mb-3 md:mb-6">
-                        <label
-                            for="name"
-                            class="block text-lg font-normal text-gray-700 mb-2">Nama Lengkap</label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="nama_lengkap"
-                            placeholder="Masukkan Nama Lengkap"
-                            class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
-                    </div>
-
-                    <div class="mb-3 md:mb-6">
-                        <label
-                            for="kelas"
-                            class="block text-lg font-normal text-gray-700 mb-2">Kelas</label>
-                        <input
-                            type="text"
-                            id="kelas"
-                            name="kelas"
-                            placeholder="Kelas..."
-                            class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-smmd:text-[16px] sm:leading-6 rounded-full" />
-                    </div>
-
-                    <div class="mb-3 md:mb-6">
-                        <label
-                            for="name"
-                            class="block text-lg font-normal text-gray-700 mb-2">No.Kartu</label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="no_kartu"
-                            placeholder="Masukkan No Kartu Anda"
-                            class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
-                    </div>
-
-                    <div class="flex gap-2 items-center">
-                        <input
-                            type="checkbox"
-                            name="remember"
-                            id="remember"
-                            class="w-5 h-5" />
-                        <p class="text-[12px] font-normal md:text-sm">
-                            Saya telah membaca dan menyetujui Syarat dan Ketentuan
-                        </p>
-                    </div>
-
-                    <!-- Buttom Form Submit Start -->
-                    <div class="flex justify-center mt-6">
-                        <button
-
-                            class="bg-main text-white px-4 py-2 block w-full rounded-full">
-                            Pinjam Buku
+            <!-- Main Content -->
+            <div class="flex flex-col flex-1 overflow-hidden">
+                <header class="flex items-center justify-between px-6 py-4">
+                    <div class="flex items-center">
+                        <button @click="sidebarOpen = true" class="text-gray-500 focus:outline-none lg:hidden">
+                            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 6H20M4 12H20M4 18H11" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
                         </button>
                     </div>
 
-                    <!-- Buttom Form Submit End -->
-                </form>
-                <!-- Form Modal End -->
+                    <div class="flex items-center">
+                        <div x-data="{ dropdownOpen: false }" class="relative">
+                            <button @click="dropdownOpen = ! dropdownOpen"
+                                class="relative flex justify-center items-center gap-2 overflow-hidden rounded-full focus:outline-none">
+                                <div class="w-8 h-8 rounded-full">
+                                    <img class="object-cover w-full h-full"
+                                        src="../../public/profile//<?php echo $profil['profil_user']; ?>"
+                                        alt="Your avatar" />
+                                </div>
+
+                                <p class="font-normal text-sm"><?php echo htmlspecialchars($profil['nama_lengkap']); ?></p>
+                            </button>
+
+                            <div x-show="dropdownOpen" @click="dropdownOpen = false"
+                                class="fixed inset-0 z-10 w-full h-full" style="display: none"></div>
+
+                            <!-- Dropdown Profile -->
+                            <div x-show="dropdownOpen"
+                                class="absolute right-0 z-10 w-48 mt-2 overflow-hidden bg-white rounded-md shadow-xl"
+                                style="display: none">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Products</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-600 hover:text-white">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Main Content Start -->
+
+                <main class="flex-1 overflow-x-hidden overflow-y-auto px-4 md:px-8 pt-2">
+                    <!-- Search Bar Start -->
+                    <div class="mb-5 md:mb-4 pt-3">
+                        <div
+                            class="w-full mx-auto md:mx-0 md:w-[75%] lg:w-[66%] relative">
+                            <input
+                                type="text"
+                                id="name"
+                                placeholder="Search"
+                                class="w-full block flex-1 bg-inputColors px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
+                            <button type="submit" class="absolute right-4 top-3">
+                                <i class="fa-solid fa-search text-lg text-slate-500"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Search Bar End -->
+
+                    
+
+                    
+
+                    <!-- Heading -->
+                    <div class="mb-4 md:mb-8">
+                        <h2 class="font-bold text-2xl text-black">Data Peminjaman</h2>
+                    </div>
+
+                    <!-- Content Detail Peminjaman -->
+                    <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+                        <div class="flex items-center gap-6 w-full mb-10" id="book-table">
+                            <!-- Card Buku -->
+                            <div class="w-[270px] hidden md:block shadow-lg rounded-lg bg-white px-3 py-3">
+                                <div class="w-[222px] rounded-md mx-auto mb-3">
+                                    <img src="../../public//assets//Books/<?= htmlspecialchars($row['cover']) ?>"
+                                        class="w-full" alt="Gambar Buku" />
+                                </div>
+
+                                <!-- Title -->
+                                <div class="px-3">
+                                    <div class="flex justify-between mb-3">
+                                        <p class="font-bold text-lg text-black"><?= htmlspecialchars($row['judul_buku']) ?></p>
+
+                                        <div class="flex items-center gap-1">
+                                            <i class="fa-solid fa-star text-yellow-500"></i>
+                                            <p class="font-normal">4.5</p>
+                                        </div>
+                                    </div>
+
+                                    <p class="font-normal text-sm">
+                                        <?= htmlspecialchars($row['sinopsis']) ?>
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Card Buku End -->
+
+                            <!-- Detail Peminjaman -->
+                            <div class="w-full md:w-[450px] h-[353px] mx-auto md:mx-0 bg-inputColors px-4 py-3 rounded-lg overflow-x-hidden">
+                                <!-- Heading -->
+                                <div class="">
+                                    <h2 class="text-[28px] font-bold text-black">
+                                        <?= htmlspecialchars($row['judul_buku']) ?>
+                                    </h2>
+                                    <p class="font-normal text-sm text-grey my-3">
+                                        Penerbit: <?= htmlspecialchars($row['penerbit']) ?>
+                                    </p>
+                                    <p class="font-bold text-[20px] text-black mb-4">
+                                        Batas Peminjaman
+                                    </p>
+
+                                    <!-- Batas Peminjaman -->
+                                    <div class="w-fit md:w-[20rem] px-2 md:px-6 py-3 bg-pinkSec flex items-center gap-1 rounded-lg mb-5">
+                                        <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">30</a>
+                                        <a href="" class="px-2 py-1 text-primaryBlue">Day</a>
+                                        <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">24</a>
+                                        <a href="" class="px-2 py-1 text-primaryBlue">Hours</a>
+                                        <a href="" class="px-2 py-1 text-white rounded-md bg-primaryBlue">60</a>
+                                        <a href="" class="px-2 py-1 text-primaryBlue">Sec</a>
+                                    </div>
+
+                                    <!-- Status Peminjaman -->
+                                    <h2 class="text-[20px] font-bold text-black mb-4">
+                                        Status Peminjaman
+                                    </h2>
+
+                                    <a href="">
+                                        <div class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 bg-pinkButton text-white font-bold text-[20px] border hover:border-pinkButton hover:bg-white hover:text-pinkButton transition-all duration-300">
+                                            <?= htmlspecialchars($row['status_peminjaman']) ?>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <!-- Detail Peminjaman End -->
+                        </div>
+                    <?php endwhile ?>
+                </main>
             </div>
         </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+        id="myModal"
+        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden overflow-y-scroll pt-10 md:pt-10 lg:pl-16">
+        <div
+            id="modalContent"
+            class="bg-white rounded-3xl shadow-lg px-6 py-4 w-[80%] md:w-[60%] modal-enter">
+            <!-- Header Modal Start -->
+            <div class="relative mb-8 md:mb-12">
+                <h2 class="text-lg md:text-2xl font-bold md:text-center">
+                    Absen Perpustakaan
+                </h2>
+                <button
+                    id="closeModal"
+                    class="text-gray-500 hover:text-gray-700 text-2xl md:text-4xl absolute top-0 right-0">
+                    &times;
+                </button>
+            </div>
+            <!-- Header Modal End -->
+
+            <!-- Form Modal Start -->
+            <form method="post" action="../Views/User/prosesAbsen.php">
+                <div class="mb-3 md:mb-6">
+                    <label
+                        for="name"
+                        class="block text-lg font-normal text-gray-700 mb-2">Nama Lengkap</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="nama_lengkap"
+                        placeholder="Masukkan Nama Lengkap"
+                        class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
+                </div>
+
+                <div class="mb-3 md:mb-6">
+                    <label
+                        for="kelas"
+                        class="block text-lg font-normal text-gray-700 mb-2">Kelas</label>
+                    <input
+                        type="text"
+                        id="kelas"
+                        name="kelas"
+                        placeholder="Kelas..."
+                        class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-smmd:text-[16px] sm:leading-6 rounded-full" />
+                </div>
+
+                <div class="mb-3 md:mb-6">
+                    <label
+                        for="name"
+                        class="block text-lg font-normal text-gray-700 mb-2">No.Kartu</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="no_kartu"
+                        placeholder="Masukkan No Kartu Anda"
+                        class="w-full block flex-1 border border-main bg-white px-6 py-3 text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-main text-sm md:text-[16px] sm:leading-6 rounded-full" />
+                </div>
+
+                <div class="flex gap-2 items-center">
+                    <input
+                        type="checkbox"
+                        name="remember"
+                        id="remember"
+                        class="w-5 h-5" />
+                    <p class="text-[12px] font-normal md:text-sm">
+                        Saya telah membaca dan menyetujui Syarat dan Ketentuan
+                    </p>
+                </div>
+
+                <!-- Buttom Form Submit Start -->
+                <div class="flex justify-center mt-6">
+                    <button
+
+                        class="bg-main text-white px-4 py-2 block w-full rounded-full">
+                        Pinjam Buku
+                    </button>
+                </div>
+
+                <!-- Buttom Form Submit End -->
+            </form>
+            <!-- Form Modal End -->
+        </div>
+    </div>
 
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                $('#search').on('keyup', function() {
-                    var query = $(this).val();
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#search').on('keyup', function() {
+                var query = $(this).val();
 
-                    $.ajax({
-                        url: '../Controller/live_searching.php', // URL ke live_searching.php
-                        method: 'POST',
-                        data: {
-                            query: query
-                        },
-                        dataType: 'json',
-                        success: function(data) {
-                            var rows = '';
-                            if (data.length > 0) {
-                                data.forEach(function(book) {
-                                    var statusClass = '';
-                                    if (book.status_peminjaman === 'proses') {
-                                        statusClass = 'bg-gray-500';
-                                    } else if (book.status_peminjaman === 'sedang dipinjam') {
-                                        statusClass = 'bg-red-500';
-                                    } else if (book.status_peminjaman === 'sudah dikembalikan') {
-                                        statusClass = 'bg-green-500';
-                                    }
+                $.ajax({
+                    url: '../Controller/live_searching.php', // URL ke live_searching.php
+                    method: 'POST',
+                    data: {
+                        query: query
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var rows = '';
+                        if (data.length > 0) {
+                            data.forEach(function(book) {
+                                var statusClass = '';
+                                if (book.status_peminjaman === 'proses') {
+                                    statusClass = 'bg-gray-500';
+                                } else if (book.status_peminjaman === 'sedang dipinjam') {
+                                    statusClass = 'bg-red-500';
+                                } else if (book.status_peminjaman === 'sudah dikembalikan') {
+                                    statusClass = 'bg-green-500';
+                                }
 
-                                    rows += `
+                                rows += `
                                     <div class="flex items-center gap-6 w-full mb-10" id="book-table">
                                 <!-- Card Buku -->
                                 <div class="w-[270px] hidden md:block shadow-lg rounded-lg bg-white px-3 py-3">
@@ -469,132 +476,132 @@
                                 </div>
                                 <!-- Detail Peminjaman End -->
                             </div>`;
-                                });
-                            } else {
-                                rows = '<p class="text-center text-gray-500">Tidak ada data ditemukan.</p>';
-                            }
-                            $('#book-table').html(rows); // Hanya hasil pencarian yang ditampilkan
+                            });
+                        } else {
+                            rows = '<p class="text-center text-gray-500">Tidak ada data ditemukan.</p>';
                         }
-                    });
-                });
-            });
-        </script>
-
-        <!-- Modal start -->
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                const openModalButton = document.getElementById("openModal");
-                const closeModalButton = document.getElementById("closeModal");
-                const modal = document.getElementById("myModal");
-
-                openModalButton.addEventListener("click", () => {
-                    modal.classList.remove("hidden");
-                });
-
-                closeModalButton.addEventListener("click", () => {
-                    modal.classList.add("hidden");
-                });
-
-                window.addEventListener("click", (event) => {
-                    if (event.target === modal) {
-                        modal.classList.add("hidden");
+                        $('#book-table').html(rows); // Hanya hasil pencarian yang ditampilkan
                     }
                 });
             });
-        </script>
-        <!-- Modal end -->
+        });
+    </script>
 
-        <!-- notifikasi pesan absen start--->
-        <script>
-            document.getElementById('absenForm').addEventListener('submit', function(event) {
-                event.preventDefault();
+    <!-- Modal start -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const openModalButton = document.getElementById("openModal");
+            const closeModalButton = document.getElementById("closeModal");
+            const modal = document.getElementById("myModal");
 
-                const formData = new FormData(this);
-
-                fetch('../Views/User/prosesAbsen.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        const notification = document.getElementById('notification');
-                        const modal = document.getElementById('myModal');
-
-                        // Tampilkan pesan respons
-                        if (data.status === 'error') {
-                            notification.classList.remove('hidden', 'bg-green-200', 'text-green-800');
-                            notification.classList.add('bg-red-200', 'text-red-800');
-                            notification.innerText = data.message;
-                        } else if (data.status === 'success') {
-                            notification.classList.remove('hidden', 'bg-red-200', 'text-red-800');
-                            notification.classList.add('bg-green-200', 'text-green-800');
-                            notification.innerText = data.message;
-
-                            // Tutup modal sebagai tanda berhasil absen
-                            modal.classList.add('hidden'); // Tutup modal
-                            notification.classList.add('hidden'); // Sembunyikan notifikasi
-                            notification.innerText = ''; // Reset teks notifikasi
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
+            openModalButton.addEventListener("click", () => {
+                modal.classList.remove("hidden");
             });
-        </script>
-        <!-- notifikasi pesan absen end--->
 
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                // Modal Start
-                const openModalButton = document.getElementById("openModal");
-                const closeModalButton = document.getElementById("closeModal");
-                const modal = document.getElementById("myModal");
-                const modalContent = document.querySelector(".modal-enter");
+            closeModalButton.addEventListener("click", () => {
+                modal.classList.add("hidden");
+            });
 
-                openModalButton.addEventListener("click", () => {
-                    modal.classList.remove("hidden");
-                    setTimeout(() => {
-                        modalContent.classList.add("modal-enter-active");
-                    }, 10);
-                });
+            window.addEventListener("click", (event) => {
+                if (event.target === modal) {
+                    modal.classList.add("hidden");
+                }
+            });
+        });
+    </script>
+    <!-- Modal end -->
 
-                closeModalButton.addEventListener("click", () => {
+    <!-- notifikasi pesan absen start--->
+    <script>
+        document.getElementById('absenForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('../Views/User/prosesAbsen.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const notification = document.getElementById('notification');
+                    const modal = document.getElementById('myModal');
+
+                    // Tampilkan pesan respons
+                    if (data.status === 'error') {
+                        notification.classList.remove('hidden', 'bg-green-200', 'text-green-800');
+                        notification.classList.add('bg-red-200', 'text-red-800');
+                        notification.innerText = data.message;
+                    } else if (data.status === 'success') {
+                        notification.classList.remove('hidden', 'bg-red-200', 'text-red-800');
+                        notification.classList.add('bg-green-200', 'text-green-800');
+                        notification.innerText = data.message;
+
+                        // Tutup modal sebagai tanda berhasil absen
+                        modal.classList.add('hidden'); // Tutup modal
+                        notification.classList.add('hidden'); // Sembunyikan notifikasi
+                        notification.innerText = ''; // Reset teks notifikasi
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+    <!-- notifikasi pesan absen end--->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Modal Start
+            const openModalButton = document.getElementById("openModal");
+            const closeModalButton = document.getElementById("closeModal");
+            const modal = document.getElementById("myModal");
+            const modalContent = document.querySelector(".modal-enter");
+
+            openModalButton.addEventListener("click", () => {
+                modal.classList.remove("hidden");
+                setTimeout(() => {
+                    modalContent.classList.add("modal-enter-active");
+                }, 10);
+            });
+
+            closeModalButton.addEventListener("click", () => {
+                modalContent.classList.remove("modal-enter-active");
+                modalContent.classList.add("modal-leave-active");
+                setTimeout(() => {
+                    modal.classList.add("hidden");
+                    modalContent.classList.remove("modal-leave-active");
+                }, 300);
+            });
+
+            window.addEventListener("click", (event) => {
+                if (event.target === modal) {
                     modalContent.classList.remove("modal-enter-active");
                     modalContent.classList.add("modal-leave-active");
                     setTimeout(() => {
                         modal.classList.add("hidden");
                         modalContent.classList.remove("modal-leave-active");
                     }, 300);
-                });
+                }
+            });
+            // Modal End
 
-                window.addEventListener("click", (event) => {
-                    if (event.target === modal) {
-                        modalContent.classList.remove("modal-enter-active");
-                        modalContent.classList.add("modal-leave-active");
-                        setTimeout(() => {
-                            modal.classList.add("hidden");
-                            modalContent.classList.remove("modal-leave-active");
-                        }, 300);
-                    }
-                });
-                // Modal End
+            // Kalender Start
+            const monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
 
-                // Kalender Start
-                const monthNames = [
-                    "January", "February", "March", "April", "May", "June",
-                    "July", "August", "September", "October", "November", "December"
-                ];
+            let date = new Date();
+            let currentMonth = date.getMonth();
+            let currentYear = date.getFullYear();
 
-                let date = new Date();
-                let currentMonth = date.getMonth();
-                let currentYear = date.getFullYear();
+            function renderCalendar(month, year) {
+                const firstDay = new Date(year, month, 1).getDay();
+                const lastDate = new Date(year, month + 1, 0).getDate();
 
-                function renderCalendar(month, year) {
-                    const firstDay = new Date(year, month, 1).getDay();
-                    const lastDate = new Date(year, month + 1, 0).getDate();
+                document.getElementById("monthYear").textContent = `${monthNames[month]} ${year}`;
 
-                    document.getElementById("monthYear").textContent = `${monthNames[month]} ${year}`;
-
-                    const calendarBody = document.getElementById("calendar-body");
-                    calendarBody.innerHTML = `
+                const calendarBody = document.getElementById("calendar-body");
+                calendarBody.innerHTML = `
             <div class="font-bold text-center">Sun</div>
             <div class="font-bold text-center">Mon</div>
             <div class="font-bold text-center">Tue</div>
@@ -603,46 +610,46 @@
             <div class="font-bold text-center">Fri</div>
             <div class="font-bold text-center">Sat</div>
           `;
-                    calendarBody.innerHTML += "<div></div>".repeat(firstDay);
+                calendarBody.innerHTML += "<div></div>".repeat(firstDay);
 
-                    for (let i = 1; i <= lastDate; i++) {
-                        const dayDiv = document.createElement("div");
-                        dayDiv.classList.add("text-center", "p-1", "rounded", "cursor-pointer", "hover:bg-gray-200");
+                for (let i = 1; i <= lastDate; i++) {
+                    const dayDiv = document.createElement("div");
+                    dayDiv.classList.add("text-center", "p-1", "rounded", "cursor-pointer", "hover:bg-gray-200");
 
-                        if (i === date.getDate() && month === date.getMonth() && year === date.getFullYear()) {
-                            dayDiv.classList.add("bg-greens", "text-white");
-                        }
-
-                        dayDiv.textContent = i;
-                        calendarBody.appendChild(dayDiv);
+                    if (i === date.getDate() && month === date.getMonth() && year === date.getFullYear()) {
+                        dayDiv.classList.add("bg-greens", "text-white");
                     }
+
+                    dayDiv.textContent = i;
+                    calendarBody.appendChild(dayDiv);
                 }
+            }
 
-                document.getElementById("prevBtn").addEventListener("click", () => {
-                    if (currentMonth === 0) {
-                        currentMonth = 11;
-                        currentYear--;
-                    } else {
-                        currentMonth--;
-                    }
-                    renderCalendar(currentMonth, currentYear);
-                });
-
-                document.getElementById("nextBtn").addEventListener("click", () => {
-                    if (currentMonth === 11) {
-                        currentMonth = 0;
-                        currentYear++;
-                    } else {
-                        currentMonth++;
-                    }
-                    renderCalendar(currentMonth, currentYear);
-                });
-
+            document.getElementById("prevBtn").addEventListener("click", () => {
+                if (currentMonth === 0) {
+                    currentMonth = 11;
+                    currentYear--;
+                } else {
+                    currentMonth--;
+                }
                 renderCalendar(currentMonth, currentYear);
-                // Kalender End
             });
-        </script>
 
-    </body>
+            document.getElementById("nextBtn").addEventListener("click", () => {
+                if (currentMonth === 11) {
+                    currentMonth = 0;
+                    currentYear++;
+                } else {
+                    currentMonth++;
+                }
+                renderCalendar(currentMonth, currentYear);
+            });
 
-    </html>
+            renderCalendar(currentMonth, currentYear);
+            // Kalender End
+        });
+    </script>
+
+</body>
+
+</html>

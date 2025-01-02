@@ -2,6 +2,16 @@
 include_once '../core/Database.php';
 include_once '../Models/Buku.php';
 
+session_start();
+
+// Pastikan pengguna sudah login
+if (!isset($_SESSION['id_user'])) {
+    header("Location: ");
+    exit();
+}
+
+
+
 $database = new Database();
 $db = $database->getConnection();
 
@@ -104,6 +114,8 @@ $i = 1;
                 </tbody>
             </table>
         </div>
+
+        
 
         
         <script>

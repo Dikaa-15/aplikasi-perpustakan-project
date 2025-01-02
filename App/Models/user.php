@@ -107,60 +107,69 @@ class User
     }
     public function register()
     {
-        $queryCheck = "SELECT COUNT(*) FROM " . $this->table_name . " WHERE no_kartu = :no_kartu OR password = :password";
-        $stmtCheck = $this->conn->prepare($queryCheck);
-
-        $stmtCheck->bindParam(":no_kartu", $this->no_kartu);
-        $stmtCheck->bindParam(":password", $this->password);
-
-        $stmtCheck->execute();
-        $count = $stmtCheck->fetchColumn();
-
-        if ($count > 0) {
-            return "Nomor kartu perpustakaan atau password sudah digunakan. Silakan gunakan yang lain.";
-        }
-
-        $query = "INSERT INTO " . $this->table_name . " 
-            SET nama_lengkap=:nama_lengkap, nis=:nis, nisn=:nisn, no_kartu=:no_kartu, kelas=:kelas, no_whatsapp=:no_whatsapp, 
-                password=:password, roles=:roles";
-        $stmt = $this->conn->prepare($query);
-
-        // Sanitasi input
+        // Validasi data input
         $this->nama_lengkap = htmlspecialchars(strip_tags($this->nama_lengkap));
         $this->nis = htmlspecialchars(strip_tags($this->nis));
         $this->nisn = htmlspecialchars(strip_tags($this->nisn));
         $this->no_kartu = htmlspecialchars(strip_tags($this->no_kartu));
         $this->kelas = htmlspecialchars(strip_tags($this->kelas));
         $this->no_whatsapp = htmlspecialchars(strip_tags($this->no_whatsapp));
-        $this->password = htmlspecialchars(strip_tags($this->password));
         $this->roles = htmlspecialchars(strip_tags($this->roles));
 
+        // Validasi role
+        $valid_roles = ['user', 'admin', 'petugas'];
+        if (!in_array($this->roles, $valid_roles)) {
+            return "Role tidak valid.";
+        }
+
+        // Periksa apakah no_kartu atau nis sudah digunakan
+        $queryCheck = "SELECT COUNT(*) FROM " . $this->table_name . " WHERE no_kartu = :no_kartu OR nis = :nis";
+        $stmtCheck = $this->conn->prepare($queryCheck);
+        $stmtCheck->bindParam(":no_kartu", $this->no_kartu);
+        $stmtCheck->bindParam(":nis", $this->nis);
+        $stmtCheck->execute();
+        $count = $stmtCheck->fetchColumn();
+
+        if ($count > 0) {
+            return "Nomor kartu perpustakaan atau NIS sudah digunakan. Silakan gunakan yang lain.";
+        }
+
+        // Hash password sebelum menyimpannya ke database
+        $hashed_password = password_hash($this->password, PASSWORD_DEFAULT);
+
+        // Query untuk menyimpan data pengguna baru
+        $query = "INSERT INTO " . $this->table_name . " 
+        (nama_lengkap, nis, nisn, no_kartu, kelas, no_whatsapp, password, roles) 
+        VALUES (:nama_lengkap, :nis, :nisn, :no_kartu, :kelas, :no_whatsapp, :password, :roles)";
+        $stmt = $this->conn->prepare($query);
+
+        // Bind parameter
         $stmt->bindParam(":nama_lengkap", $this->nama_lengkap);
         $stmt->bindParam(":nis", $this->nis);
         $stmt->bindParam(":nisn", $this->nisn);
         $stmt->bindParam(":no_kartu", $this->no_kartu);
         $stmt->bindParam(":kelas", $this->kelas);
         $stmt->bindParam(":no_whatsapp", $this->no_whatsapp);
-        $stmt->bindParam(":password", $this->password);
+        $stmt->bindParam(":password", $hashed_password);
         $stmt->bindParam(":roles", $this->roles);
 
+        // Eksekusi query dan cek hasil
         if ($stmt->execute()) {
-            // Simpan data pengguna ke dalam session setelah registrasi berhasil
+            // Ambil ID pengguna yang baru saja didaftarkan
             $this->id_user = $this->conn->lastInsertId();
 
-            // Menyimpan data pengguna ke dalam session
+            // Simpan data pengguna ke dalam session
             $_SESSION['user_logged_in'] = true;
             $_SESSION['id_user'] = $this->id_user;
             $_SESSION['no_kartu'] = $this->no_kartu;
             $_SESSION['roles'] = $this->roles;
             $_SESSION['nama_lengkap'] = $this->nama_lengkap;
-            // Anda bisa menambahkan gambar profil jika ada, misalnya:
-            $_SESSION['profil_user'] = ""; // Atur path gambar profil jika ada
 
             return true; // Registrasi berhasil
         }
 
-        return false; // Jika tidak berhasil
+        error_log("Query Error: " . implode(" | ", $stmt->errorInfo())); // Debugging error
+        return "Terjadi kesalahan saat mendaftarkan akun. Silakan coba lagi.";
     }
 
 
@@ -243,26 +252,21 @@ class User
         return false;
     }
 
-    public function absenPerpustakaan()
+    public function absenPerpustakaan($keperluan = 'Mengunjungi Perpustakaan')
     {
         $query = "INSERT INTO kunjungan (id_user, tanggal_kunjungan, waktu_kunjungan, keperluan) 
-                  VALUES (:id_user, CURDATE(), CURTIME(), 'Mengunjungi Perpustakaan')";
+              VALUES (:id_user, CURDATE(), CURTIME(), :keperluan)";
 
         // Persiapkan query
         $stmt = $this->conn->prepare($query);
 
         // Bind parameter
         $stmt->bindParam(':id_user', $this->id_user);
+        $stmt->bindParam(':keperluan', $keperluan);
 
         // Eksekusi query
-        if ($stmt->execute()) {
-            return true;  // Absensi berhasil
-        }
-
-        return false;  // Absensi gagal
+        return $stmt->execute();
     }
-
-
 
     // Fungsi untuk memeriksa apakah user sudah absen hari ini
     public function cekAbsensiHariIni()
@@ -303,7 +307,7 @@ class User
     public function getUserProfile($id_user)
     {
         // Query untuk mendapatkan data profil pengguna berdasarkan id_user
-        $query = "SELECT nama_lengkap, profil_user FROM user WHERE id_user = :id_user";
+        $query = "SELECT nama_lengkap, profil_user, kelas FROM user WHERE id_user = :id_user";
 
         // Persiapkan query
         $stmt = $this->conn->prepare($query);
@@ -419,9 +423,6 @@ class User
 
         return $stmt->execute();
     }
-
-
-
 
     public function updateNISN($id_user, $nisn)
     {

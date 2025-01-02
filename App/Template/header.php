@@ -43,7 +43,7 @@ if (isset($_SESSION['user_logged_in']) && $_SESSION['user_logged_in']) {
                     <a href="" class="font-normal text-sm lg:text-lg text-slate-800 group-hover:text-main">Tentang Kami</a>
                 </li>
                 <li class="group px-3 py-2">
-                    <a href="daftarBuku.html" class="font-normal text-sm lg:text-lg text-slate-800 group-hover:text-main">Kategori Buku</a>
+                    <a href="aboutUs.php" class="font-normal text-sm lg:text-lg text-slate-800 group-hover:text-main">Kategori Buku</a>
                 </li>
                 <li class="group px-3 py-2">
                     <a href="" class="font-normal text-sm lg:text-lg text-slate-800 group-hover:text-main">FAQ</a>

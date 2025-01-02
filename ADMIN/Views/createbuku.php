@@ -3,6 +3,16 @@
 include_once '../core/Database.php';
 include_once '../Models/Buku.php';
 
+
+session_start();
+
+// Pastikan pengguna sudah login
+if (!isset($_SESSION['id_user'])) {
+    header("Location: ");
+    exit();
+}
+
+
 $database = new Database();
 $db = $database->getConnection();
 
@@ -15,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $buku->penerbit = $_POST['penerbit'];
     $buku->sinopsis = $_POST['sinopsis'];
     $buku->stok_buku = $_POST['stok_buku'];
+    $buku->url_buku = $_POST['url_buku'];
 
     // Handle file upload for cover
     if(isset($_FILES['cover']) && $_FILES['cover']['error'] == 0) {
@@ -85,6 +96,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div>
                 <label class="block text-gray-600">Stok Buku</label>
                 <input type="number" name="stok_buku" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            </div>
+            <div>
+                <label class="block text-gray-600">URL Buku</label>
+                <input type="text" name="url_buku" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
             </div>
             <div>
                 <input type="submit" value="Tambah Buku" class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-200">

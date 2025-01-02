@@ -2,6 +2,15 @@
     include_once '../core/Database.php';
     include_once '../Models/Buku.php';
 
+    session_start();
+
+    // Pastikan pengguna sudah login
+    if (!isset($_SESSION['id_user'])) {
+        header("Location: ");
+        exit();
+    }
+
+
     $database = new Database();
     $db = $database->getConnection();
 
@@ -25,7 +34,7 @@
 
     <body class="bg-gray-100">
 
-    <input type="search" id="search" class="mt-10 px-10 py-5">
+        <input type="search" id="search" class="mt-10 px-10 py-5">
         <div class="container mx-auto py-8">
             <h1 class="text-3xl font-bold text-center mb-8">Daftar Buku</h1>
             <div class="text-left mb-4">
@@ -93,36 +102,36 @@
             }
         </script>
 
-<script>
-    $(document).ready(function() {
-        $('#search').on('keyup', function() {
-            var query = $(this).val(); // Ambil nilai input pencarian
+        <script>
+            $(document).ready(function() {
+                $('#search').on('keyup', function() {
+                    var query = $(this).val(); // Ambil nilai input pencarian
 
-            // Lakukan AJAX request jika pengguna mengetik sesuatu
-            $.ajax({
-                url: '../Controller/live_searching-Books.php', // URL ke server-side script
-                method: 'POST', // Metode request POST
-                data: {
-                    query: query // Data yang dikirim ke server
-                },
-                dataType: 'json', // Tipe data yang diharapkan dari server
-                success: function(data) {
-                    // Kosongkan konten tabel sebelum menampilkan hasil pencarian baru
-                    $('#book-table tbody').html(''); // Mengosongkan tbody pada tabel
+                    // Lakukan AJAX request jika pengguna mengetik sesuatu
+                    $.ajax({
+                        url: '../Controller/live_searching-Books.php', // URL ke server-side script
+                        method: 'POST', // Metode request POST
+                        data: {
+                            query: query // Data yang dikirim ke server
+                        },
+                        dataType: 'json', // Tipe data yang diharapkan dari server
+                        success: function(data) {
+                            // Kosongkan konten tabel sebelum menampilkan hasil pencarian baru
+                            $('#book-table tbody').html(''); // Mengosongkan tbody pada tabel
 
-                    // Jika tidak ada hasil pencarian
-                    if (data.length === 0) {
-                        $('#book-table tbody').html('<tr><td colspan="8" class="text-center py-3 px-6">Tidak ada hasil yang ditemukan</td></tr>');
-                    } else {
-                        var rows = ''; // Variabel untuk menampung hasil
+                            // Jika tidak ada hasil pencarian
+                            if (data.length === 0) {
+                                $('#book-table tbody').html('<tr><td colspan="8" class="text-center py-3 px-6">Tidak ada hasil yang ditemukan</td></tr>');
+                            } else {
+                                var rows = ''; // Variabel untuk menampung hasil
 
-                        // Iterasi setiap hasil buku
-                        data.forEach(function(book, index) {
-                            // Cek jika cover buku ada, jika tidak ada gunakan default
-                            var cover = book.cover ? book.cover : 'default-cover.png';
+                                // Iterasi setiap hasil buku
+                                data.forEach(function(book, index) {
+                                    // Cek jika cover buku ada, jika tidak ada gunakan default
+                                    var cover = book.cover ? book.cover : 'default-cover.png';
 
-                            // Buat HTML untuk setiap baris data buku
-                            rows += `
+                                    // Buat HTML untuk setiap baris data buku
+                                    rows += `
                                 <tr class="border-b border-gray-200 hover:bg-gray-100">
                                     <td class="py-3 px-6 text-left whitespace-nowrap">${index + 1}</td>
                                     <td class="py-3 px-6 text-left">${book.kode_buku}</td>
@@ -138,16 +147,16 @@
                                         <button onclick="confirmDelete(${book.id_buku})" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2">Delete</button>
                                     </td>
                                 </tr>`;
-                        });
+                                });
 
-                        // Tampilkan hasil pencarian ke dalam tbody dari #book-table
-                        $('#book-table tbody').html(rows);
-                    }
-                }
+                                // Tampilkan hasil pencarian ke dalam tbody dari #book-table
+                                $('#book-table tbody').html(rows);
+                            }
+                        }
+                    });
+                });
             });
-        });
-    });
-</script>
+        </script>
 
 
     </body>

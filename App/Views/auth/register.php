@@ -13,39 +13,34 @@ $user = new User($db);
 $error_message = ""; // Inisialisasi variabel untuk pesan error
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Sanitasi dan validasi input
     $user->nama_lengkap = htmlspecialchars($_POST['nama_lengkap']);
     $user->nis = htmlspecialchars($_POST['nis']);
     $user->nisn = htmlspecialchars($_POST['nisn']);
     $user->no_kartu = htmlspecialchars($_POST['no_kartu']);
     $user->kelas = htmlspecialchars($_POST['kelas']);
     $user->no_whatsapp = htmlspecialchars($_POST['no_whatsapp']);
-    $user->password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $user->roles = 'user';
+    $user->password = $_POST['password']; // Tanpa hash di sini
 
-    // Proses registrasi dan cek hasil
+    // Tentukan role, default adalah 'user'
+    if (isset($_POST['role']) && $_POST['role'] === 'admin') {
+        $user->roles = 'admin';
+    } else {
+        $user->roles = 'user';
+    }
+
+    // Proses registrasi
     $result = $user->register();
 
     if ($result === true) {
-        $_SESSION['id_user'] = $user->id_user;
-        $_SESSION['nama_lengkap'] = $user->nama_lengkap;
-        $_SESSION['roles'] = $user->roles;
-
-        switch ($user->roles) {
-            case 'admin':
-                header("Location: ../admin/dashboard.php");
-                break;
-            case 'user':
-                header("Location: ./Landing-page.php");
-                break;
-            case 'petugas':
-                header("Location: ../petugas/dashboard.php");
-                break;
-        }
+        // Redirect ke halaman sesuai kebutuhan
+        header("Location: ./Landing-page.php");
         exit();
     } else {
-        $error_message = $result; // Menangkap pesan error dari register()
+        $error_message = $result; // Tampilkan pesan error di form
     }
 }
+
 
 
 ?>

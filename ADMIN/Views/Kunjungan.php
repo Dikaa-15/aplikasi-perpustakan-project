@@ -2,6 +2,14 @@
 
 require_once '../Controller/Kunjungan.php';
 
+session_start();
+
+// Pastikan pengguna sudah login
+if (!isset($_SESSION['id_user'])) {
+    header("Location: ");
+    exit();
+}
+
 // Create a database connection
 $database = new Database();
 $db = $database->getConnection();

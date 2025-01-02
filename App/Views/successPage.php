@@ -59,7 +59,7 @@
                         </div>
                         <div
                             class="w-[90%] md:w-[80%] h-fit py-3 px-6 text-center text-white bg-main rounded-full mx-auto transition-all duration-300 hover:bg-white hover:text-main border hover:border-main cursor-pointer">
-                            <a href="./dataPeminjaman.php" class="">Confirmasi Peminjaman</a>
+                            <a href="./dashboard.php" class="">Confirmasi Peminjaman</a>
                         </div>
                     </div>
                     <!-- Title End -->

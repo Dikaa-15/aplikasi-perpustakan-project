@@ -1,6 +1,15 @@
 <?php
 require_once '../Controller/UserController.php';
 
+
+session_start();
+
+// Pastikan pengguna sudah login
+if (!isset($_SESSION['id_user'])) {
+    header("Location: ");
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $userController = new UserController();
     $result = $userController->createUser($_POST);
@@ -12,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         echo "Gagal menambahkan user. Silakan coba lagi.";
     }
+
 
 }
 ?>

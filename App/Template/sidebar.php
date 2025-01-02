@@ -23,7 +23,7 @@
 
         <div
             :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'"
-            class="fixed left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-pinkSec lg:translate-x-0 lg:static lg:inset-0 h-screen">
+            class="fixed left-0 z-30 w-64 overflow-y-auto transition duration-300 transform bg-pinkSec lg:translate-x-0 lg:static lg:inset-0 h-full md:min-h-screen">
             <div class="flex items-center justify-center pt-8 mb-8">
                 <a href="../Views/Landing-page.php">
                 <img src="../../public//logo 1.png" alt="Logo Buku" />
@@ -36,7 +36,7 @@
                     href="userDashboard.html"
                     class="flex items-center gap-2 px-4 py-2 group hover:bg-main rounded-lg transition-all duration-300">
                     <img
-                        src="../../public//svg/element-equal.svg"
+                        src="../../public-admin//image//properti//kotak//vuesax//bold//element-equal.svg"
                         alt=""
                         class="w-6 h-6 object-cover" />
 
@@ -108,9 +108,8 @@
                         @click="sidebarOpen = true"
                         class="text-gray-500 focus:outline-none lg:hidden">
                         <svg
-                            class="w-6 h-6"
+                            class="w-6 h-6 fill-white"
                             viewBox="0 0 24 24"
-                            fill="none"
                             xmlns="http://www.w3.org/2000/svg">
                             <path
                                 d="M4 6H20M4 12H20M4 18H11"

@@ -1,9 +1,19 @@
 <?php
 
 require_once '../Controller/Peminjaman.php';
+
+
+session_start();
+
+// Pastikan pengguna sudah login
+if (!isset($_SESSION['id_user'])) {
+    header("Location: ");
+    exit();
+}
+
+
 $peminjamanController = new PeminjamanController();
 $peminjamans = $peminjamanController->getAllPeminjaman();
-
 
 
 // Mendapatkan data hari ini atau semua

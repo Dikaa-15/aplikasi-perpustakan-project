@@ -26,6 +26,57 @@
 
 
 
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        // Ambil data dari form
+        $namaLengkap = trim($_POST['nama_lengkap'] ?? '');
+        $kelas = trim($_POST['kelas'] ?? '');
+        $noKartu = trim($_POST['no_kartu'] ?? '');
+
+        // Validasi input
+        if (empty($namaLengkap) || empty($kelas) || empty($noKartu)) {
+            $_SESSION['absen_message'] = 'Semua field wajib diisi.';
+            $_SESSION['absen_status'] = 'error';
+            header('Location: ../Views/User/dashboard.php');
+            exit();
+        }
+
+        // Set properti user
+        $user->nama_lengkap = $namaLengkap;
+        $user->kelas = $kelas;
+        $user->no_kartu = $noKartu;
+
+        // Cari user berdasarkan nomor kartu
+        $userInfo = $user->getUserByNoKartu($user->no_kartu);
+
+        if ($userInfo) {
+            $user->id_user = $userInfo['id_user'];
+
+            // Cek apakah sudah absen hari ini
+            if ($user->cekAbsensiHariIni()) {
+                $_SESSION['absen_message'] = 'Anda sudah absen hari ini.';
+                $_SESSION['absen_status'] = 'error';
+                header('Location: ../Views/User/dashboard.php');
+                exit();
+            }
+
+            // Lakukan proses absensi
+            if ($user->absenPerpustakaan()) {
+                $_SESSION['absen_message'] = 'Absensi berhasil.';
+                $_SESSION['absen_status'] = 'success';
+            } else {
+                $_SESSION['absen_message'] = 'Gagal melakukan absensi.';
+                $_SESSION['absen_status'] = 'error';
+            }
+        } else {
+            $_SESSION['absen_message'] = 'Nomor kartu belum terdaftar.';
+            $_SESSION['absen_status'] = 'error';
+        }
+
+        // Redirect kembali ke dashboard
+        header('Location: ../Views/User/dashboard.php');
+        exit();
+    }
+
     // Mengambil data peminjaman buku dari database
     $buku = new Buku($db);
     $stmt = $buku->getPeminjaman($id_user);
@@ -51,6 +102,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
             integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
             crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     </head>
 
@@ -132,7 +185,7 @@
                         <a
                             href="./User/account.php"
                             class="flex items-center gap-2 px-4 py-2 group hover:bg-main rounded-lg transition-all duration-300 <?php echo $current_page == 'account.php' ? 'bg-main' : ''; ?>"">
-                        <svg class=" fill-current <?php echo $current_page == 'account.php' ? 'fill-white' : 'text-slate-500 group-hover:fill-white'; ?> group-hover:fill-white w-6 h-6 " width="24" height="24" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+                        <svg class=" fill-current <?php echo $current_page == 'account.php' ? 'fill-white' : 'text-slate-500 group-hover:fill-white'; ?> group-hover:fill-white w-6 h-6 " width=" 24" height="24" viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9.00012 17.0625C8.49762 17.0625 7.98762 16.9349 7.53762 16.6724L3.08262 14.0999C2.18262 13.5749 1.62012 12.6074 1.62012 11.5649V6.43496C1.62012 5.39246 2.18262 4.42496 3.08262 3.89996L7.53762 1.32747C8.43762 0.802466 9.55512 0.802466 10.4626 1.32747L14.9176 3.89996C15.8176 4.42496 16.3801 5.39246 16.3801 6.43496V11.5649C16.3801 12.6074 15.8176 13.5749 14.9176 14.0999L10.4626 16.6724C10.0126 16.9349 9.50262 17.0625 9.00012 17.0625ZM9.00012 2.06245C8.69262 2.06245 8.37762 2.14496 8.10012 2.30246L3.64512 4.87495C3.09012 5.19745 2.74512 5.78996 2.74512 6.43496V11.5649C2.74512 12.2024 3.09012 12.8025 3.64512 13.125L8.10012 15.6974C8.65512 16.0199 9.34512 16.0199 9.90012 15.6974L14.3551 13.125C14.9101 12.8025 15.2551 12.2099 15.2551 11.5649V6.43496C15.2551 5.79746 14.9101 5.19745 14.3551 4.87495L9.90012 2.30246C9.62262 2.14496 9.30762 2.06245 9.00012 2.06245Z" />
                             <path d="M8.99994 8.81261C7.72494 8.81261 6.68994 7.77759 6.68994 6.50259C6.68994 5.22759 7.72494 4.19263 8.99994 4.19263C10.2749 4.19263 11.3099 5.22759 11.3099 6.50259C11.3099 7.77759 10.2749 8.81261 8.99994 8.81261ZM8.99994 5.31763C8.34744 5.31763 7.81494 5.85009 7.81494 6.50259C7.81494 7.15509 8.34744 7.68761 8.99994 7.68761C9.65244 7.68761 10.1849 7.15509 10.1849 6.50259C10.1849 5.85009 9.65244 5.31763 8.99994 5.31763Z" />
                             <path d="M12 13.0575C11.6925 13.0575 11.4375 12.8025 11.4375 12.495C11.4375 11.46 10.3425 10.6125 9 10.6125C7.6575 10.6125 6.5625 11.46 6.5625 12.495C6.5625 12.8025 6.3075 13.0575 6 13.0575C5.6925 13.0575 5.4375 12.8025 5.4375 12.495C5.4375 10.8375 7.035 9.48755 9 9.48755C10.965 9.48755 12.5625 10.8375 12.5625 12.495C12.5625 12.8025 12.3075 13.0575 12 13.0575Z" />
@@ -211,10 +264,36 @@
                                 <button type="submit" class="ml-[-50px]">
                                     <i class="fa-solid fa-search text-lg text-slate-500"></i>
                                 </button>
-                                <button id="openModal" class="px-4 py-2 text-white bg-main text-black rounded-full">Absen Perpus</button>
+                                <!-- <button id="openModal" class="px-4 py-2 text-white bg-main text-black rounded-full">Absen Perpus</button> -->
 
                             </div>
                         </div>
+
+                        <!-- Tombol Absen Start -->
+                        <div class="py-3 flex items-center mb-2">
+                            <button id="openModal" class="block w-full">
+                                <a
+                                    href="#"
+                                    class="px-8 py-3 w-[60%] md:w-[30%] lg:w-[25%] xl:w-[20%] flex gap-2 items-center rounded-lg bg-main text-white text-sm hover:bg-white hover:text-main border hover:border-main transition-all duration-300 group">
+                                    <i
+                                        class="fa-solid fa-pen-to-square text-white group-hover:text-main"></i>
+                                    <p>Absen Perpus</p>
+                                </a>
+                            </button>
+                        </div>
+                        <!-- Tombol Absen End -->
+
+                        <!-- Nav Tabs Section Start -->
+                        <div
+                            class="grid grid-cols-2 items-center gap-2 mb-8 w-fit rounded-full shadow-2xl">
+                            <a
+                                href=""
+                                class="px-4 py-3 text-sm hover:bg-main hover:text-white hover:font-bold rounded-full transition-all duration-300">Sedang Dipinjam</a>
+                            <a
+                                href=""
+                                class="px-4 py-3 text-sm hover:bg-main hover:text-white hover:font-bold rounded-full transition-all duration-300">Sudah Dikembalikan</a>
+                        </div>
+                        <!-- Nav Tabs Section End -->
 
                         <!-- Heading -->
                         <div class="mb-4 md:mb-8">
@@ -273,24 +352,56 @@
                                             <a href="" class="px-2 py-1 text-primaryBlue">Sec</a>
                                         </div> -->
 
-                                        <div>
-                                            <span class="px-2 py-1 text-white rounded-md bg-primaryBlue"><?= htmlspecialchars($row['tanggal_kembalian']) ?></span>
+
+                                        <!-- <div class="px-4 py-2 block text-white rounded-md bg-primaryBlue flex items-center gap-3">
+                                        <i class="fa-solid fa-calendar-days text-white"></i>
+                                        <span class=""><?= date('d', strtotime($row['tanggal_kembalian'])) ?></span>
+                                            
+                                        </div> -->
+
+                                        <!-- Batas Peminjaman Start -->
+                                        <div
+                                            class="w-fit md:w-[16.5rem] px-2 md:px-6 py-3 bg-pinkSec flex items-center gap-3 rounded-lg mb-5">
+                                            <!-- Date Start -->
+                                            <div class="flex items-center gap-3">
+                                                <i
+                                                    class="fa-solid fa-calendar-days text-main text-2xl"></i>
+                                                <p class="font-semibold text-[1rem] text-main"><?= date('d', strtotime($row['tanggal_kembalian'])) ?></p>
+                                            </div>
+                                            <!-- Date End -->
+
+                                            <div class="">|</div>
+
+                                            <!-- Month Start -->
+                                            <div class="">
+                                                <p class="font-semibold text-[1rem] text-main"><?= date('F', strtotime($row['tanggal_kembalian'])) ?></p>
+                                            </div>
+                                            <!-- Month End -->
+
+                                            <div class="">|</div>
+
+                                            <!-- Year Start -->
+                                            <div class="">
+                                                <p class="font-semibold text-[1rem] text-main"><?= date('Y', strtotime($row['tanggal_kembalian'])) ?></p>
+                                            </div>
+                                            <!-- Year End -->
                                         </div>
+                                        <!-- Batas Peminjaman End -->
                                         <!-- Status Peminjaman -->
                                         <h2 class="text-[20px] font-bold text-black mb-4">
                                             Status Peminjaman
                                         </h2>
 
                                         <a href="">
-                                            <?php if($row['status_peminjaman'] === "proses" || $row['status_peminjaman'] === "sedang dipinjam" || $row['status_peminjaman'] === "telat mengembalikan"): ?>
-                                            <div class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 bg-pinkButton text-white font-bold text-[20px] border hover:border-pinkButton hover:bg-white hover:text-pinkButton transition-all duration-300">
-                                                <?= htmlspecialchars($row['status_peminjaman']) ?>
-                                            </div>
+                                            <?php if ($row['status_peminjaman'] === "proses" || $row['status_peminjaman'] === "sedang dipinjam" || $row['status_peminjaman'] === "telat mengembalikan"): ?>
+                                                <div class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 bg-pinkButton text-white font-bold text-[20px] border hover:border-pinkButton hover:bg-white hover:text-pinkButton transition-all duration-300">
+                                                    <?= htmlspecialchars($row['status_peminjaman']) ?>
+                                                </div>
                                             <?php elseif ($row['status_peminjaman'] === "sudah dikembalikan") : ?>
                                                 <div class="block w-[90%] md:w-[75%] text-center rounded-2xl px-8 py-3 bg-green-500 text-white font-bold text-[20px] border hover:border-green-500 hover:bg-white hover:text-green-500  transition-all duration-300">
-                                                <?= htmlspecialchars($row['status_peminjaman']) ?>
-                                            </div>
-                        
+                                                    <?= htmlspecialchars($row['status_peminjaman']) ?>
+                                                </div>
+
                                             <?php endif; ?>
                                         </a>
                                     </div>
@@ -386,6 +497,8 @@
                 <!-- Form Modal End -->
             </div>
         </div>
+
+
 
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -516,37 +629,40 @@
 
         <!-- notifikasi pesan absen start--->
         <script>
-            document.getElementById('absenForm').addEventListener('submit', function(event) {
-                event.preventDefault();
+            document.addEventListener('DOMContentLoaded', () => {
+                const absenForm = document.getElementById('absenForm');
 
-                const formData = new FormData(this);
+                absenForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
 
-                fetch('../Views/User/prosesAbsen.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        const notification = document.getElementById('notification');
-                        const modal = document.getElementById('myModal');
+                    const formData = new FormData(this);
 
-                        // Tampilkan pesan respons
-                        if (data.status === 'error') {
-                            notification.classList.remove('hidden', 'bg-green-200', 'text-green-800');
-                            notification.classList.add('bg-red-200', 'text-red-800');
-                            notification.innerText = data.message;
-                        } else if (data.status === 'success') {
-                            notification.classList.remove('hidden', 'bg-red-200', 'text-red-800');
-                            notification.classList.add('bg-green-200', 'text-green-800');
-                            notification.innerText = data.message;
-
-                            // Tutup modal sebagai tanda berhasil absen
-                            modal.classList.add('hidden'); // Tutup modal
-                            notification.classList.add('hidden'); // Sembunyikan notifikasi
-                            notification.innerText = ''; // Reset teks notifikasi
-                        }
-                    })
-                    .catch(error => console.error('Error:', error));
+                    fetch('../Views/User/prosesAbsen.php', {
+                            method: 'POST',
+                            body: formData,
+                        })
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Absen berhasil',
+                                    showConfirmButton: false,
+                                    timer: 1500,
+                                });
+                                // Tutup modal jika ada
+                                const modal = document.getElementById('myModal');
+                                modal.classList.add('hidden');
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal',
+                                    text: data.message,
+                                });
+                            }
+                        })
+                        .catch((error) => console.error('Error:', error));
+                });
             });
         </script>
         <!-- notifikasi pesan absen end--->
@@ -652,6 +768,7 @@
                 // Kalender End
             });
         </script>
+
 
     </body>
 

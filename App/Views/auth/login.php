@@ -6,32 +6,37 @@ require_once '../../Models/user.php';
 $database = new Database();
 $db = $database->getConnection();
 
-// Cek apakah pengguna sudah login
+// Redirect jika sudah login
 if (isset($_SESSION['no_kartu'])) {
-    header("Location: ./login.php");
+    switch ($_SESSION['roles']) {
+        case 'admin':
+            header("Location: /PERPUSTAKAAN-JP/ADMIN/Views/view.php");
+            break;
+        case 'user':
+            header("Location: ../dashboard.php");
+            break;
+        case 'petugas':
+            header("Location: ../petugas/petugas_dashboard.php");
+            break;
+    }
     exit();
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = new User($db);
-    $user->no_kartu = $_POST['no_kartu'] ?? null;
-    $user->password = $_POST['password'] ?? null;
+    $user->no_kartu = htmlspecialchars(strip_tags($_POST['no_kartu']));
+    $user->password = htmlspecialchars(strip_tags($_POST['password']));
 
     if ($user->login()) {
-        // Redirect sesuai dengan roles
-        switch ($_SESSION['roles']) {
-            case 'admin':
-                header("Location: /PERPUSTAKAAN-JP/ADMIN/Views/view.php");
-                break;
-            case 'user':
-                header("Location: ../dashboard.php");
-                break;
-            case 'petugas':
-                header("Location: ../petugas/petugas_dashboard.php");
-                break;
-            default:
-                echo "Role tidak dikenali.";
-                break;
+        $roles = $_SESSION['roles'];
+        if ($roles === 'admin') {
+            header("Location: /PERPUSTAKAAN-JP/ADMIN/Views/view.php");
+        } elseif ($roles === 'user') {
+            header("Location: ../dashboard.php");
+        } elseif ($roles === 'petugas') {
+            header("Location: ../petugas/petugas_dashboard.php");
+        } else {
+            echo "Role tidak dikenali.";
         }
         exit();
     } else {
@@ -41,8 +46,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,13 +57,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-
 </head>
 <body class="font-fontMain scroll-smooth">
   <div class="container mx-auto flex flex-col md:flex-row px-5 py-4 md:px-16 md:py-8 gap-8">
     <div class="grid grid-cols-2 items-center pt-4">
-
-      <div class="min-h-screen w-full col-span-1 ">
+      <div class="min-h-screen w-full col-span-1">
         <div class="py-2 px-6 w-full mx-auto">
           <img src="../../../public//logo 1.png" alt="Logo" />
         </div>
@@ -69,8 +70,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <div>
             <h1 class="font-bold text-3xl mb-4">Selamat Datang</h1>
             <span>Belum punya akun perpus?
-              <a href="./register.php" class="text-main">Daftar disini</a>
+              <a href="./register.php" class="text-blue-700">Daftar disini</a>
             </span>
+
+            <!-- Tampilkan Pesan Error Jika Ada -->
+            <?php if (isset($_SESSION['error_message'])): ?>
+              <div class="bg-red-100 text-red-700 px-4 py-2 rounded-lg mb-4">
+                <?= htmlspecialchars($_SESSION['error_message']); ?>
+              </div>
+              <?php unset($_SESSION['error_message']); ?>
+            <?php endif; ?>
 
             <!-- Form Login -->
             <form action="login.php" method="POST">
@@ -117,4 +126,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </div>
 </body>
 </html>
-

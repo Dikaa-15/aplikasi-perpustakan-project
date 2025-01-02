@@ -10,10 +10,28 @@ $db = $database->getConnection();
 // Membuat instance dari kelas Buku dengan menyertakan koneksi database
 $buku = new Buku($db);
 
-// Mengambil hanya 4 data buku
-$stmt = $buku->readLimited(16); // Mengambil 4 data buku
-$books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Ambil kategori dari query string
+$kategori = isset($_GET['kategori']) && !empty($_GET['kategori']) ? htmlspecialchars(strip_tags($_GET['kategori'])) : null;
+
+// Ambil data buku berdasarkan kategori
+try {
+    if ($kategori === null) {
+        // Menggunakan pagination dengan offset dan limit
+        $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
+        $limit = 16; // Batas default 16 buku per halaman
+        $stmt = $buku->readPaginated($offset, $limit);
+    } else {
+        $stmt = $buku->readByKategori($kategori);
+    }
+
+    // Ambil hasil query
+    $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "SQL Error: " . htmlspecialchars($e->getMessage());
+    exit;
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -106,17 +124,16 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <!-- Nav Header Menu Start -->
                 <div class="flex justify-between items-center">
                     <div class="max-w-sm md:max-w-md flex-wrap flex items-center gap-6">
-                        <a href="#" class="font-bold text-[15px]">Semua Buku</a>
-                        <a href="#" class="font-medium text-[15px] text-fontColor">Pelajaran</a>
-                        <a href="#" class="font-medium text-[15px] text-fontColor">Sumber Pendukung</a>
-                        <a href="#" class="font-medium text-[15px] text-fontColor">Literasi</a>
+                        <a href="?kategori=" class="font-bold text-[15px]">Semua Buku</a>
+                        <a href="?kategori=Agama" class="font-medium text-[15px] text-fontColor">Agama</a>
+                        <a href="?kategori=Umum" class="font-medium text-[15px] text-fontColor">Umum</a>
+                        <a href="?kategori=Sosial" class="font-medium text-[15px] text-fontColor">Sosial</a>
                     </div>
                 </div>
                 <!-- Nav Header Menu End -->
                 <!-- Conntent Buku Start -->
                 <div class="grid md:grid-cols-2 lg:grid-cols-4 items-center gap-4 mt-14">
                     <?php foreach ($books as $data) : ?>
-
                         <!-- Card Start -->
                         <div class="w-full h-[450px] shadow-xl rounded-lg mb-6 md:mb-5 flex flex-col overflow-hidden" id="book-table">
                             <div class="px-4 py-4 flex-grow">
@@ -146,7 +163,6 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             </div>
                         </div>
                         <!-- Card End -->
-
                     <?php endforeach; ?>
                 </div>
 
@@ -156,6 +172,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </section>
     <!-- Content Daftar End -->
+     
     <!-- <div class="flex gap-5 mx-5 mt-5" id="book-table">
         <?php foreach ($books as $data): ?>
             <div class="border-2 border-gray p-3">
@@ -170,8 +187,7 @@ $books = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Template Footer -->
     <?php require_once '../Template/footer.php' ?>
-    <a href="auth/logout.php">Logout</a>
-
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function() {
